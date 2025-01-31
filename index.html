@@ -93,20 +93,39 @@
                 let category = "";
                 if (finalDegree >= 0 && finalDegree < 90) {
                     category = "Red - Compliment";
-                    generateCompliment();
+                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(compliments);
                 } else if (finalDegree >= 90 && finalDegree < 180) {
                     category = "Blue - Mystery Dare";
-                    generateDare();
+                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(dares);
                 } else if (finalDegree >= 180 && finalDegree < 270) {
                     category = "Green - Fortune";
-                    generateFortune();
+                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(fortunes);
                 } else {
                     category = "Yellow - Would You Rather?";
-                    generateWouldYouRather();
+                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(questions);
                 }
-                resultText.innerText = `You landed on: ${category}!`;
             }, 3000);
         }
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        const compliments = [
+            "You're an amazing person!", "You light up the room!", "Your energy is contagious!", "You inspire those around you!", "You have a heart of gold!"
+        ];
+
+        const dares = [
+            "Do 10 jumping jacks!", "Sing a song in a funny voice!", "Act like a robot for 20 seconds!", "Tell a joke to the person next to you!", "Try to balance a spoon on your nose!"
+        ];
+
+        const fortunes = [
+            "You will receive good news soon!", "A great opportunity is coming!", "Someone is thinking about you!", "Your dreams will come true!", "Success is in your future!"
+        ];
+
+        const questions = [
+            "Would you rather be able to fly or be invisible?", "Would you rather never need sleep or never need food?", "Would you rather explore space or the deep sea?", "Would you rather have super strength or super speed?", "Would you rather live 100 years in the future or 100 years in the past?"
+        ];
     </script>
 
 </body>
