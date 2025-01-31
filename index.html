@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tap & Play</title>
+    <title>Tap & Play - Spin the Wheel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,37 @@
         }
         h1 {
             color: #333;
+        }
+        .wheel-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(
+                #ff6f61 0deg 90deg, /* Compliment */
+                #f4a261 90deg 180deg, /* Dare */
+                #2a9d8f 180deg 270deg, /* Fortune */
+                #264653 270deg 360deg /* Would You Rather */
+            );
+            border: 5px solid #000;
+            position: absolute;
+            transition: transform 3s ease-out;
+        }
+        .pointer {
+            width: 0; 
+            height: 0; 
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid red;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         .button {
             display: block;
@@ -25,11 +56,8 @@
             border-radius: 5px;
             cursor: pointer;
             color: white;
+            background-color: #333;
         }
-        .compliment { background-color: #ff6f61; }
-        .dare { background-color: #f4a261; }
-        .fortune { background-color: #2a9d8f; }
-        .would-you-rather { background-color: #264653; }
         .output {
             font-size: 20px;
             margin-top: 20px;
@@ -40,17 +68,53 @@
 </head>
 <body>
 
-    <h1>Tap & Play</h1>
-    <p>Pick an option and see what you get!</p>
+    <h1>Tap & Play - Spin the Wheel</h1>
+    <p>Tap to spin the wheel and see what you get!</p>
 
-    <button class="button compliment" onclick="generateCompliment()">Get a Compliment</button>
-    <button class="button dare" onclick="generateDare()">Mystery Dare</button>
-    <button class="button fortune" onclick="generateFortune()">Your Fortune</button>
-    <button class="button would-you-rather" onclick="generateWouldYouRather()">Would You Rather?</button>
+    <div class="wheel-container">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+    </div>
+
+    <button class="button" onclick="spinWheel()">Spin the Wheel</button>
 
     <p class="output" id="result"></p>
 
     <script>
+        function spinWheel() {
+            let wheel = document.getElementById("wheel");
+            let resultText = document.getElementById("result");
+
+            // Random spin between 1800° - 2160° (5-6 full spins for smooth animation)
+            let randomSpin = 1800 + Math.floor(Math.random() * 360);
+
+            // Apply the spin
+            wheel.style.transform = `rotate(${randomSpin}deg)`;
+
+            // Wait for the spin animation to end (3s)
+            setTimeout(() => {
+                // Normalize the final degree (mod 360 to get final landing zone)
+                let finalDegree = (randomSpin % 360);
+
+                let category = "";
+                if (finalDegree >= 0 && finalDegree < 90) {
+                    category = "Compliment";
+                    generateCompliment();
+                } else if (finalDegree >= 90 && finalDegree < 180) {
+                    category = "Mystery Dare";
+                    generateDare();
+                } else if (finalDegree >= 180 && finalDegree < 270) {
+                    category = "Fortune";
+                    generateFortune();
+                } else {
+                    category = "Would You Rather?";
+                    generateWouldYouRather();
+                }
+
+                resultText.innerText = `You landed on: ${category}!`;
+            }, 3000); // Match the CSS animation duration
+        }
+
         function generateCompliment() {
             let compliments = [
                 "You're like a ray of sunshine on a cloudy day!",
@@ -59,7 +123,7 @@
                 "You're proof that kindness still exists.",
                 "You have a contagious laugh that makes others happy!"
             ];
-            document.getElementById("result").innerText = getRandom(compliments);
+            showFinalResult(compliments);
         }
 
         function generateDare() {
@@ -70,7 +134,7 @@
                 "Do your best dance move for 10 seconds!",
                 "Pretend you're a famous celebrity and introduce yourself."
             ];
-            document.getElementById("result").innerText = getRandom(dares);
+            showFinalResult(dares);
         }
 
         function generateFortune() {
@@ -81,7 +145,7 @@
                 "Someone is thinking about you right now.",
                 "Your dream vacation is closer than you think!"
             ];
-            document.getElementById("result").innerText = getRandom(fortunes);
+            showFinalResult(fortunes);
         }
 
         function generateWouldYouRather() {
@@ -92,7 +156,14 @@
                 "Would you rather never have to pay for coffee again or never pay for movie tickets?",
                 "Would you rather live in a mansion by the beach or a cozy cabin in the mountains?"
             ];
-            document.getElementById("result").innerText = getRandom(questions);
+            showFinalResult(questions);
+        }
+
+        function showFinalResult(arr) {
+            // Wait a bit before showing final result
+            setTimeout(() => {
+                document.getElementById("result").innerText += `\n${getRandom(arr)}`;
+            }, 500);
         }
 
         function getRandom(arr) {
