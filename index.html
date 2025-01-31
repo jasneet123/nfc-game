@@ -16,20 +16,15 @@
         }
         .wheel-container {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 300px;
+            height: 300px;
             margin: 20px auto;
         }
         .wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                #ff6f61 0deg 90deg, /* Compliment */
-                #f4a261 90deg 180deg, /* Dare */
-                #2a9d8f 180deg 270deg, /* Fortune */
-                #264653 270deg 360deg /* Would You Rather */
-            );
+            background: url('https://i.imgur.com/LyFAcCn.png') no-repeat center center / cover;
             border: 5px solid #000;
             position: absolute;
             transition: transform 3s ease-out;
@@ -37,11 +32,11 @@
         .pointer {
             width: 0; 
             height: 0; 
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 25px solid red;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 40px solid red;
             position: absolute;
-            top: -20px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -85,17 +80,11 @@
             let wheel = document.getElementById("wheel");
             let resultText = document.getElementById("result");
 
-            // Random spin between 1800° - 2160° (5-6 full spins for smooth animation)
             let randomSpin = 1800 + Math.floor(Math.random() * 360);
-
-            // Apply the spin
             wheel.style.transform = `rotate(${randomSpin}deg)`;
 
-            // Wait for the spin animation to end (3s)
             setTimeout(() => {
-                // Normalize the final degree (mod 360 to get final landing zone)
                 let finalDegree = (randomSpin % 360);
-
                 let category = "";
                 if (finalDegree >= 0 && finalDegree < 90) {
                     category = "Compliment";
@@ -110,57 +99,43 @@
                     category = "Would You Rather?";
                     generateWouldYouRather();
                 }
-
                 resultText.innerText = `You landed on: ${category}!`;
-            }, 3000); // Match the CSS animation duration
+            }, 3000);
         }
 
         function generateCompliment() {
             let compliments = [
-                "You're like a ray of sunshine on a cloudy day!",
-                "You make the world a better place just by being you.",
-                "Your smile could light up a whole city!",
-                "You're proof that kindness still exists.",
-                "You have a contagious laugh that makes others happy!"
+                "You're an amazing person!", "You light up the room!", "Your energy is contagious!", "You inspire those around you!", "You have a heart of gold!",
+                "You make the world a better place!", "Your kindness is appreciated!", "Your laughter is the best sound!", "You're a great friend!", "You bring joy to everyone!"
             ];
             showFinalResult(compliments);
         }
 
         function generateDare() {
             let dares = [
-                "Take a selfie making the goofiest face you can!",
-                "Send a random emoji to the last person you texted.",
-                "Say the alphabet backwards (or at least try).",
-                "Do your best dance move for 10 seconds!",
-                "Pretend you're a famous celebrity and introduce yourself."
+                "Do 10 jumping jacks!", "Sing a song in a funny voice!", "Act like a robot for 20 seconds!", "Tell a joke to the person next to you!", "Try to balance a spoon on your nose!",
+                "Text a friend 'I just met an alien!'", "Spin in a circle 5 times and walk straight!", "Try to whistle your favorite song!", "Dance for 10 seconds!", "Make an animal sound!"
             ];
             showFinalResult(dares);
         }
 
         function generateFortune() {
             let fortunes = [
-                "A surprise message will make your day soon!",
-                "Good vibes are headed your way!",
-                "You will have a lucky moment in the next 24 hours.",
-                "Someone is thinking about you right now.",
-                "Your dream vacation is closer than you think!"
+                "You will receive good news soon!", "A great opportunity is coming!", "Someone is thinking about you!", "Your dreams will come true!", "Success is in your future!",
+                "Happiness is just around the corner!", "Adventure awaits you!", "A lucky moment is coming!", "Something exciting will happen today!", "Your hard work will pay off!"
             ];
             showFinalResult(fortunes);
         }
 
         function generateWouldYouRather() {
             let questions = [
-                "Would you rather have the ability to fly or be invisible?",
-                "Would you rather have unlimited free pizza or free travel for life?",
-                "Would you rather time travel to the past or the future?",
-                "Would you rather never have to pay for coffee again or never pay for movie tickets?",
-                "Would you rather live in a mansion by the beach or a cozy cabin in the mountains?"
+                "Would you rather be able to fly or be invisible?", "Would you rather never need sleep or never need food?", "Would you rather explore space or the deep sea?", "Would you rather have super strength or super speed?", "Would you rather live 100 years in the future or 100 years in the past?",
+                "Would you rather always have to sing when you talk or dance when you walk?", "Would you rather be a famous actor or a famous scientist?", "Would you rather have a pet dragon or a pet unicorn?", "Would you rather be a wizard or a superhero?", "Would you rather have unlimited ice cream or unlimited pizza?"
             ];
             showFinalResult(questions);
         }
 
         function showFinalResult(arr) {
-            // Wait a bit before showing final result
             setTimeout(() => {
                 document.getElementById("result").innerText += `\n${getRandom(arr)}`;
             }, 500);
