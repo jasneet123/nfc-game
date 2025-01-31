@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap & Play</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f8f8;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .button {
+            display: block;
+            width: 80%;
+            max-width: 300px;
+            padding: 15px;
+            margin: 10px auto;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        .compliment { background-color: #ff6f61; }
+        .dare { background-color: #f4a261; }
+        .fortune { background-color: #2a9d8f; }
+        .would-you-rather { background-color: #264653; }
+        .output {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #555;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tap & Play</h1>
+    <p>Pick an option and see what you get!</p>
+
+    <button class="button compliment" onclick="generateCompliment()">Get a Compliment</button>
+    <button class="button dare" onclick="generateDare()">Mystery Dare</button>
+    <button class="button fortune" onclick="generateFortune()">Your Fortune</button>
+    <button class="button would-you-rather" onclick="generateWouldYouRather()">Would You Rather?</button>
+
+    <p class="output" id="result"></p>
+
+    <script>
+        function generateCompliment() {
+            let compliments = [
+                "You're like a ray of sunshine on a cloudy day!",
+                "You make the world a better place just by being you.",
+                "Your smile could light up a whole city!",
+                "You're proof that kindness still exists.",
+                "You have a contagious laugh that makes others happy!"
+            ];
+            document.getElementById("result").innerText = getRandom(compliments);
+        }
+
+        function generateDare() {
+            let dares = [
+                "Take a selfie making the goofiest face you can!",
+                "Send a random emoji to the last person you texted.",
+                "Say the alphabet backwards (or at least try).",
+                "Do your best dance move for 10 seconds!",
+                "Pretend you're a famous celebrity and introduce yourself."
+            ];
+            document.getElementById("result").innerText = getRandom(dares);
+        }
+
+        function generateFortune() {
+            let fortunes = [
+                "A surprise message will make your day soon!",
+                "Good vibes are headed your way!",
+                "You will have a lucky moment in the next 24 hours.",
+                "Someone is thinking about you right now.",
+                "Your dream vacation is closer than you think!"
+            ];
+            document.getElementById("result").innerText = getRandom(fortunes);
+        }
+
+        function generateWouldYouRather() {
+            let questions = [
+                "Would you rather have the ability to fly or be invisible?",
+                "Would you rather have unlimited free pizza or free travel for life?",
+                "Would you rather time travel to the past or the future?",
+                "Would you rather never have to pay for coffee again or never pay for movie tickets?",
+                "Would you rather live in a mansion by the beach or a cozy cabin in the mountains?"
+            ];
+            document.getElementById("result").innerText = getRandom(questions);
+        }
+
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+    </script>
+
+</body>
+</html>
