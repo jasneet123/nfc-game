@@ -24,7 +24,12 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: url('https://i.imgur.com/LyFAcCn.png') no-repeat center center / cover;
+            background: conic-gradient(
+                #ff6f61 0deg 90deg, /* Compliment */
+                #f4a261 90deg 180deg, /* Dare */
+                #2a9d8f 180deg 270deg, /* Fortune */
+                #264653 270deg 360deg /* Would You Rather */
+            );
             border: 5px solid #000;
             position: absolute;
             transition: transform 3s ease-out;
@@ -101,48 +106,6 @@
                 }
                 resultText.innerText = `You landed on: ${category}!`;
             }, 3000);
-        }
-
-        function generateCompliment() {
-            let compliments = [
-                "You're an amazing person!", "You light up the room!", "Your energy is contagious!", "You inspire those around you!", "You have a heart of gold!",
-                "You make the world a better place!", "Your kindness is appreciated!", "Your laughter is the best sound!", "You're a great friend!", "You bring joy to everyone!"
-            ];
-            showFinalResult(compliments);
-        }
-
-        function generateDare() {
-            let dares = [
-                "Do 10 jumping jacks!", "Sing a song in a funny voice!", "Act like a robot for 20 seconds!", "Tell a joke to the person next to you!", "Try to balance a spoon on your nose!",
-                "Text a friend 'I just met an alien!'", "Spin in a circle 5 times and walk straight!", "Try to whistle your favorite song!", "Dance for 10 seconds!", "Make an animal sound!"
-            ];
-            showFinalResult(dares);
-        }
-
-        function generateFortune() {
-            let fortunes = [
-                "You will receive good news soon!", "A great opportunity is coming!", "Someone is thinking about you!", "Your dreams will come true!", "Success is in your future!",
-                "Happiness is just around the corner!", "Adventure awaits you!", "A lucky moment is coming!", "Something exciting will happen today!", "Your hard work will pay off!"
-            ];
-            showFinalResult(fortunes);
-        }
-
-        function generateWouldYouRather() {
-            let questions = [
-                "Would you rather be able to fly or be invisible?", "Would you rather never need sleep or never need food?", "Would you rather explore space or the deep sea?", "Would you rather have super strength or super speed?", "Would you rather live 100 years in the future or 100 years in the past?",
-                "Would you rather always have to sing when you talk or dance when you walk?", "Would you rather be a famous actor or a famous scientist?", "Would you rather have a pet dragon or a pet unicorn?", "Would you rather be a wizard or a superhero?", "Would you rather have unlimited ice cream or unlimited pizza?"
-            ];
-            showFinalResult(questions);
-        }
-
-        function showFinalResult(arr) {
-            setTimeout(() => {
-                document.getElementById("result").innerText += `\n${getRandom(arr)}`;
-            }, 500);
-        }
-
-        function getRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
         }
     </script>
 
