@@ -25,10 +25,10 @@
             height: 100%;
             border-radius: 50%;
             background: conic-gradient(
-                #ff6f61 0deg 90deg, /* Compliment */
-                #f4a261 90deg 180deg, /* Dare */
-                #2a9d8f 180deg 270deg, /* Fortune */
-                #264653 270deg 360deg /* Would You Rather */
+                red 0deg 90deg, 
+                blue 90deg 180deg, 
+                green 180deg 270deg, 
+                yellow 270deg 360deg
             );
             border: 5px solid #000;
             position: absolute;
@@ -92,16 +92,16 @@
                 let finalDegree = (randomSpin % 360);
                 let category = "";
                 if (finalDegree >= 0 && finalDegree < 90) {
-                    category = "Compliment";
+                    category = "Red - Compliment";
                     generateCompliment();
                 } else if (finalDegree >= 90 && finalDegree < 180) {
-                    category = "Mystery Dare";
+                    category = "Blue - Mystery Dare";
                     generateDare();
                 } else if (finalDegree >= 180 && finalDegree < 270) {
-                    category = "Fortune";
+                    category = "Green - Fortune";
                     generateFortune();
                 } else {
-                    category = "Would You Rather?";
+                    category = "Yellow - Would You Rather?";
                     generateWouldYouRather();
                 }
                 resultText.innerText = `You landed on: ${category}!`;
