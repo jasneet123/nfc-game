@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Stack - Stack Your Vibes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+            position: relative;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 15px 0;
+            animation: slideDown 0.6s ease;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 4px 20px rgba(255, 217, 61, 0.3);
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin: 15px 0;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ffd93d;
+            text-shadow: 0 2px 10px rgba(255, 217, 61, 0.5);
+        }
+
+        .stat-label {
+            font-size: 0.75em;
+            opacity: 0.8;
+            margin-top: 3px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Game Area */
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            animation: scaleIn 0.6s ease;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+            cursor: pointer;
+            display: block;
+            touch-action: none;
+        }
+
+        /* Controls */
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(238, 90, 111, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            font-size: 0.9em;
+            margin: 5px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Achievements */
+        .achievements {
+            margin: 20px 0;
+            animation: fadeIn 1s ease;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+        }
+
+        .achievement-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item.unlocked {
+            border-color: #ffd93d;
+            background: rgba(255, 217, 61, 0.2);
+            transform: scale(1.05);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+            margin-bottom: 5px;
+            filter: grayscale(100%);
+            opacity: 0.5;
+        }
+
+        .achievement-item.unlocked .achievement-icon {
+            filter: grayscale(0%);
+            opacity: 1;
+            animation: bounce 0.5s ease;
+        }
+
+        .achievement-label {
+            font-size: 0.7em;
+            opacity: 0.8;
+        }
+
+        /* Daily Challenge */
+        .daily-challenge {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 20px;
+            padding: 15px 20px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .challenge-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .challenge-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .challenge-reward {
+            margin-top: 8px;
+            font-size: 1.2em;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid #ffd93d;
+        }
+
+        .leaderboard-rank {
+            font-weight: bold;
+            font-size: 1.2em;
+            width: 40px;
+        }
+
+        .leaderboard-name {
+            flex: 1;
+        }
+
+        .leaderboard-score {
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        /* Customization Panel */
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .theme-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.selected {
+            border-color: white;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .theme-option.locked {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .theme-option.locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5em;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Particles Background */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Game Over Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: scaleIn 0.4s ease;
+        }
+
+        .modal-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd93d;
+            margin: 20px 0;
+            text-shadow: 0 4px 20px rgba(255, 217, 61, 0.5);
+        }
+
+        .new-record {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 15px 0;
+            font-weight: bold;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2em;
+            }
+            .stat-value {
+                font-size: 1.4em;
+            }
+            #gameCanvas {
+                height: 350px;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2em;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">💎 VIBE STACK</div>
+            <div class="tagline">Stack Your Vibes, Own Your Style</div>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-value" id="scoreDisplay">0</div>
+                <div class="stat-label">Score</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="highScoreDisplay">0</div>
+                <div class="stat-label">Best</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="streakDisplay">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+        </div>
+
+        <!-- Daily Challenge -->
+        <div class="daily-challenge">
+            <div class="challenge-title">🔥 Daily Challenge</div>
+            <div class="challenge-desc" id="challengeDesc">Stack 10 perfect blocks!</div>
+            <div class="challenge-reward">Reward: 🎨 New Theme Unlock</div>
+        </div>
+
+        <!-- Game Container -->
+        <div class="game-container">
+            <canvas id="gameCanvas"></canvas>
+
+            <div class="controls">
+                <button class="btn btn-primary" id="dropBtn" onclick="dropBlock()">
+                    TAP TO DROP
+                </button>
+            </div>
+        </div>
+
+        <!-- Theme Selector -->
+        <div class="section-title">🎨 Customize Your Vibe</div>
+        <div class="theme-selector" id="themeSelector"></div>
+
+        <!-- Achievements -->
+        <div class="achievements">
+            <div class="section-title">🏆 Achievements</div>
+            <div class="achievement-grid" id="achievementGrid"></div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard">
+            <div class="section-title">👑 Top Stackers</div>
+            <div id="leaderboardList"></div>
+        </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameOverModal">
+        <div class="modal-content">
+            <div class="modal-title">Game Over!</div>
+            <div>Your Score:</div>
+            <div class="modal-score" id="finalScore">0</div>
+            <div id="newRecordBadge"></div>
+            <button class="btn btn-primary" onclick="restartGame()" style="margin-top: 20px;">
+                Play Again
+            </button>
+            <button class="btn btn-secondary" onclick="shareScore()">
+                📤 Share Score
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            score: 0,
+            highScore: localStorage.getItem('vibeStackHighScore') || 0,
+            streak: 0,
+            blocks: [],
+            currentBlock: null,
+            isPlaying: false,
+            animationFrame: null,
+            currentTheme: localStorage.getItem('vibeStackTheme') || 0,
+            unlockedThemes: JSON.parse(localStorage.getItem('vibeStackUnlockedThemes') || '[0]'),
+            achievements: JSON.parse(localStorage.getItem('vibeStackAchievements') || '[]'),
+            totalGamesPlayed: parseInt(localStorage.getItem('vibeStackGamesPlayed') || '0'),
+            perfectDrops: 0,
+            dailyChallenge: {
+                completed: localStorage.getItem('vibeStackDailyComplete') === new Date().toDateString(),
+                target: 10,
+                progress: 0
+            }
+        };
+
+        // Themes
+        const themes = [
+            { name: 'OG Vibes', colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#ffd93d'], unlockAt: 0 },
+            { name: 'Sunset', colors: ['#f093fb', '#f5576c', '#ff8c42', '#ffd93d'], unlockAt: 50 },
+            { name: 'Ocean', colors: ['#667eea', '#4ecdc4', '#45b7d1', '#764ba2'], unlockAt: 100 },
+            { name: 'Forest', colors: ['#38ada9', '#78e08f', '#b8e994', '#4a69bd'], unlockAt: 200 },
+            { name: 'Neon', colors: ['#ff00ff', '#00ffff', '#ffff00', '#00ff00'], unlockAt: 500 },
+            { name: 'Candy', colors: ['#ff6b9d', '#c44569', '#ffa502', '#ff6348'], unlockAt: 1000 }
+        ];
+
+        // Achievements
+        const achievementsList = [
+            { id: 'first', icon: '🎯', label: 'First Drop', condition: (s) => s.totalGamesPlayed >= 1 },
+            { id: 'beginner', icon: '⭐', label: 'Score 10', condition: (s) => s.highScore >= 10 },
+            { id: 'amateur', icon: '💫', label: 'Score 25', condition: (s) => s.highScore >= 25 },
+            { id: 'pro', icon: '🌟', label: 'Score 50', condition: (s) => s.highScore >= 50 },
+            { id: 'master', icon: '👑', label: 'Score 100', condition: (s) => s.highScore >= 100 },
+            { id: 'perfect', icon: '💎', label: 'Perfect 5x', condition: (s) => s.perfectDrops >= 5 },
+            { id: 'streaker', icon: '🔥', label: 'Streak 10', condition: (s) => s.streak >= 10 },
+            { id: 'daily', icon: '📅', label: 'Daily Done', condition: (s) => s.dailyChallenge.completed }
+        ];
+
+        // Canvas Setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Block Class
+        class Block {
+            constructor(x, y, width, height, speed, color) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.speed = speed;
+                this.color = color;
+                this.direction = 1;
+            }
+
+            update() {
+                this.x += this.speed * this.direction;
+                const canvasWidth = canvas.getBoundingClientRect().width;
+                if (this.x + this.width >= canvasWidth || this.x <= 0) {
+                    this.direction *= -1;
+                }
+            }
+
+            draw() {
+                const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.width, this.y + this.height);
+                gradient.addColorStop(0, this.color);
+                gradient.addColorStop(1, this.adjustBrightness(this.color, -20));
+
+                ctx.fillStyle = gradient;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 15;
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.shadowBlur = 0;
+
+                // Shine effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.fillRect(this.x, this.y, this.width, this.height / 4);
+            }
+
+            adjustBrightness(color, percent) {
+                const num = parseInt(color.replace('#', ''), 16);
+                const amt = Math.round(2.55 * percent);
+                const R = (num >> 16) + amt;
+                const G = (num >> 8 & 0x00FF) + amt;
+                const B = (num & 0x0000FF) + amt;
+                return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                    (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                    (B < 255 ? B < 1 ? 0 : B : 255))
+                    .toString(16).slice(1);
+            }
+        }
+
+        // Game Functions
+        function startGame() {
+            gameState.score = 0;
+            gameState.blocks = [];
+            gameState.currentBlock = null;
+            gameState.isPlaying = true;
+            gameState.perfectDrops = 0;
+            gameState.streak = 0;
+
+            updateDisplay();
+
+            // Start with base block
+            const canvasWidth = canvas.getBoundingClientRect().width;
+            const canvasHeight = canvas.getBoundingClientRect().height;
+            const baseBlock = new Block(
+                canvasWidth / 2 - 75,
+                canvasHeight - 30,
+                150,
+                30,
+                0,
+                getCurrentThemeColor(0)
+            );
+            gameState.blocks.push(baseBlock);
+
+            spawnNewBlock();
+            gameLoop();
+        }
+
+        function spawnNewBlock() {
+            const canvasWidth = canvas.getBoundingClientRect().width;
+            const canvasHeight = canvas.getBoundingClientRect().height;
+            const lastBlock = gameState.blocks[gameState.blocks.length - 1];
+            const newY = lastBlock.y - 35;
+            const speed = 2 + gameState.score * 0.1;
+            const colorIndex = gameState.blocks.length % themes[gameState.currentTheme].colors.length;
+
+            gameState.currentBlock = new Block(
+                0,
+                newY,
+                lastBlock.width,
+                30,
+                Math.min(speed, 8),
+                getCurrentThemeColor(colorIndex)
+            );
+        }
+
+        function getCurrentThemeColor(index) {
+            return themes[gameState.currentTheme].colors[index % themes[gameState.currentTheme].colors.length];
+        }
+
+        function dropBlock() {
+            if (!gameState.isPlaying || !gameState.currentBlock) return;
+
+            playSound(440, 0.1);
+
+            const lastBlock = gameState.blocks[gameState.blocks.length - 1];
+            const currentBlock = gameState.currentBlock;
+
+            // Calculate overlap
+            const overlapLeft = Math.max(lastBlock.x, currentBlock.x);
+            const overlapRight = Math.min(lastBlock.x + lastBlock.width, currentBlock.x + currentBlock.width);
+            const overlapWidth = overlapRight - overlapLeft;
+
+            if (overlapWidth <= 0) {
+                // Game Over
+                gameOver();
+                return;
+            }
+
+            // Perfect drop bonus
+            const perfectThreshold = 5;
+            if (Math.abs(currentBlock.x - lastBlock.x) < perfectThreshold) {
+                gameState.perfectDrops++;
+                gameState.streak++;
+                gameState.score += 5;
+                showFloatingText('+5 PERFECT!', currentBlock.x + currentBlock.width / 2, currentBlock.y, '#ffd93d');
+                createParticles(currentBlock.x + currentBlock.width / 2, currentBlock.y, '#ffd93d');
+            } else {
+                gameState.streak = 0;
+            }
+
+            // Update block
+            currentBlock.x = overlapLeft;
+            currentBlock.width = overlapWidth;
+            currentBlock.speed = 0;
+            currentBlock.direction = 0;
+
+            gameState.blocks.push(currentBlock);
+            gameState.score++;
+
+            // Daily challenge progress
+            if (!gameState.dailyChallenge.completed) {
+                gameState.dailyChallenge.progress++;
+                if (gameState.dailyChallenge.progress >= gameState.dailyChallenge.target) {
+                    completeDailyChallenge();
+                }
+            }
+
+            // Check achievements
+            checkAchievements();
+
+            // Check theme unlocks
+            checkThemeUnlocks();
+
+            updateDisplay();
+            spawnNewBlock();
+        }
+
+        function gameOver() {
+            gameState.isPlaying = false;
+            gameState.totalGamesPlayed++;
+
+            playSound(200, 0.3);
+
+            // Save high score
+            if (gameState.score > gameState.highScore) {
+                gameState.highScore = gameState.score;
+                localStorage.setItem('vibeStackHighScore', gameState.highScore);
+                document.getElementById('newRecordBadge').innerHTML = '<div class="new-record">🎉 NEW RECORD! 🎉</div>';
+            } else {
+                document.getElementById('newRecordBadge').innerHTML = '';
+            }
+
+            localStorage.setItem('vibeStackGamesPlayed', gameState.totalGamesPlayed);
+
+            // Show modal
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('gameOverModal').classList.add('active');
+
+            checkAchievements();
+            updateLeaderboard();
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverModal').classList.remove('active');
+            startGame();
+        }
+
+        function gameLoop() {
+            if (!gameState.isPlaying) return;
+
+            const canvasWidth = canvas.getBoundingClientRect().width;
+            const canvasHeight = canvas.getBoundingClientRect().height;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            // Draw blocks
+            gameState.blocks.forEach(block => block.draw());
+
+            // Update and draw current block
+            if (gameState.currentBlock) {
+                gameState.currentBlock.update();
+                gameState.currentBlock.draw();
+            }
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateDisplay() {
+            document.getElementById('scoreDisplay').textContent = gameState.score;
+            document.getElementById('highScoreDisplay').textContent = gameState.highScore;
+            document.getElementById('streakDisplay').textContent = gameState.streak;
+        }
+
+        // Sound Effects
+        function playSound(frequency, duration) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = frequency;
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + duration);
+            } catch (e) {
+                // Sound failed, continue silently
+            }
+        }
+
+        // Particles
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 10; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = Math.random() * 8 + 4 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = color;
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'fixed';
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 3 + 2;
+                const vx = Math.cos(angle) * velocity;
+                const vy = Math.sin(angle) * velocity;
+
+                document.body.appendChild(particle);
+
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+
+                const animate = () => {
+                    posX += vx;
+                    posY += vy;
+                    opacity -= 0.02;
+
+                    particle.style.left = posX + 'px';
+                    particle.style.top = posY + 'px';
+                    particle.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+
+                animate();
+            }
+        }
+
+        // Floating Text
+        function showFloatingText(text, x, y, color) {
+            const textEl = document.createElement('div');
+            textEl.textContent = text;
+            textEl.style.position = 'fixed';
+            textEl.style.left = x + 'px';
+            textEl.style.top = y + 'px';
+            textEl.style.color = color;
+            textEl.style.fontWeight = 'bold';
+            textEl.style.fontSize = '1.5em';
+            textEl.style.pointerEvents = 'none';
+            textEl.style.zIndex = '1000';
+            textEl.style.textShadow = '0 2px 10px rgba(0,0,0,0.5)';
+
+            document.body.appendChild(textEl);
+
+            let posY = y;
+            let opacity = 1;
+
+            const animate = () => {
+                posY -= 2;
+                opacity -= 0.02;
+
+                textEl.style.top = posY + 'px';
+                textEl.style.opacity = opacity;
+
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    textEl.remove();
+                }
+            };
+
+            animate();
+        }
+
+        // Themes
+        function initThemeSelector() {
+            const selector = document.getElementById('themeSelector');
+            selector.innerHTML = '';
+
+            themes.forEach((theme, index) => {
+                const option = document.createElement('div');
+                option.className = 'theme-option';
+                option.style.background = `linear-gradient(135deg, ${theme.colors[0]}, ${theme.colors[1]})`;
+
+                const isUnlocked = gameState.unlockedThemes.includes(index);
+
+                if (!isUnlocked) {
+                    option.classList.add('locked');
+                    option.title = `Unlock at score ${theme.unlockAt}`;
+                } else {
+                    option.addEventListener('click', () => selectTheme(index));
+                }
+
+                if (index === gameState.currentTheme) {
+                    option.classList.add('selected');
+                }
+
+                selector.appendChild(option);
+            });
+        }
+
+        function selectTheme(index) {
+            if (!gameState.unlockedThemes.includes(index)) return;
+
+            gameState.currentTheme = index;
+            localStorage.setItem('vibeStackTheme', index);
+            initThemeSelector();
+            playSound(600, 0.1);
+        }
+
+        function checkThemeUnlocks() {
+            themes.forEach((theme, index) => {
+                if (gameState.highScore >= theme.unlockAt && !gameState.unlockedThemes.includes(index)) {
+                    gameState.unlockedThemes.push(index);
+                    localStorage.setItem('vibeStackUnlockedThemes', JSON.stringify(gameState.unlockedThemes));
+                    showFloatingText(`🎨 ${theme.name} Unlocked!`, canvas.getBoundingClientRect().width / 2, 100, '#ffd93d');
+                    playSound(800, 0.3);
+                    initThemeSelector();
+                }
+            });
+        }
+
+        // Achievements
+        function initAchievements() {
+            const grid = document.getElementById('achievementGrid');
+            grid.innerHTML = '';
+
+            achievementsList.forEach(achievement => {
+                const item = document.createElement('div');
+                item.className = 'achievement-item';
+
+                const isUnlocked = gameState.achievements.includes(achievement.id);
+                if (isUnlocked) {
+                    item.classList.add('unlocked');
+                }
+
+                item.innerHTML = `
+                    <div class="achievement-icon">${achievement.icon}</div>
+                    <div class="achievement-label">${achievement.label}</div>
+                `;
+
+                grid.appendChild(item);
+            });
+        }
+
+        function checkAchievements() {
+            achievementsList.forEach(achievement => {
+                if (!gameState.achievements.includes(achievement.id) && achievement.condition(gameState)) {
+                    gameState.achievements.push(achievement.id);
+                    localStorage.setItem('vibeStackAchievements', JSON.stringify(gameState.achievements));
+                    showFloatingText(`🏆 ${achievement.label}!`, canvas.getBoundingClientRect().width / 2, 150, '#ffd93d');
+                    playSound(900, 0.4);
+                    initAchievements();
+                }
+            });
+        }
+
+        // Daily Challenge
+        function completeDailyChallenge() {
+            gameState.dailyChallenge.completed = true;
+            localStorage.setItem('vibeStackDailyComplete', new Date().toDateString());
+
+            // Unlock a random theme
+            const lockedThemes = themes.map((_, i) => i).filter(i => !gameState.unlockedThemes.includes(i));
+            if (lockedThemes.length > 0) {
+                const randomTheme = lockedThemes[Math.floor(Math.random() * lockedThemes.length)];
+                gameState.unlockedThemes.push(randomTheme);
+                localStorage.setItem('vibeStackUnlockedThemes', JSON.stringify(gameState.unlockedThemes));
+                showFloatingText(`🎉 Daily Complete! ${themes[randomTheme].name} Unlocked!`, canvas.getBoundingClientRect().width / 2, 100, '#ffd93d');
+                initThemeSelector();
+            }
+        }
+
+        // Leaderboard
+        function updateLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            const leaderboard = JSON.parse(localStorage.getItem('vibeStackLeaderboard') || '[]');
+
+            // Add current score
+            leaderboard.push({ name: 'You', score: gameState.score, date: Date.now() });
+
+            // Sort and keep top 5
+            leaderboard.sort((a, b) => b.score - a.score);
+            const top5 = leaderboard.slice(0, 5);
+
+            localStorage.setItem('vibeStackLeaderboard', JSON.stringify(top5));
+
+            list.innerHTML = '';
+            top5.forEach((entry, index) => {
+                const item = document.createElement('div');
+                item.className = 'leaderboard-item';
+                item.innerHTML = `
+                    <div class="leaderboard-rank">#${index + 1}</div>
+                    <div class="leaderboard-name">${entry.name}</div>
+                    <div class="leaderboard-score">${entry.score}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // Share
+        function shareScore() {
+            const text = `I just scored ${gameState.score} on Vibe Stack! 💎 Can you beat it?`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Vibe Stack',
+                    text: text,
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(text + ' ' + window.location.href)
+                    .then(() => alert('Score copied to clipboard!'))
+                    .catch(() => alert(text));
+            }
+        }
+
+        // Keyboard support
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && gameState.isPlaying) {
+                e.preventDefault();
+                dropBlock();
+            }
+        });
+
+        // Touch/Click on canvas
+        canvas.addEventListener('click', () => {
+            if (gameState.isPlaying) {
+                dropBlock();
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+        initThemeSelector();
+        initAchievements();
+        updateLeaderboard();
+        startGame();
+    </script>
+</body>
+</html>
