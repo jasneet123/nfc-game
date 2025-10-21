@@ -5,106 +5,545 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tap & Play - Spin the Wheel</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            background-color: #f8f8f8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
+            color: white;
         }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         h1 {
-            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 0.8s ease;
         }
+
+        .subtitle {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            animation: fadeInDown 1s ease;
+        }
+
+        .game-area {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .wheel-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+        }
+
+        .stats-section {
+            flex: 0 0 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: fadeInRight 0.8s ease;
+        }
+
         .wheel-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1;
             margin: 20px auto;
+            animation: fadeIn 1s ease;
         }
+
         .wheel {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: conic-gradient(
-                red 0deg 90deg, 
-                blue 90deg 180deg, 
-                green 180deg 270deg, 
-                yellow 270deg 360deg
-            );
-            border: 5px solid #000;
-            position: absolute;
-            transition: transform 0.5s ease-in-out;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            border: 8px solid #fff;
         }
-        .pointer {
-            width: 0; 
-            height: 0; 
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 40px solid red;
+
+        .wheel-segment {
             position: absolute;
-            top: -25px;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .segment-1 {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            transform: rotate(0deg);
+        }
+
+        .segment-2 {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            transform: rotate(90deg);
+        }
+
+        .segment-3 {
+            background: linear-gradient(135deg, #95e1d3, #38ada9);
+            transform: rotate(180deg);
+        }
+
+        .segment-4 {
+            background: linear-gradient(135deg, #ffd93d, #f8b500);
+            transform: rotate(270deg);
+        }
+
+        .segment-label {
+            position: absolute;
+            font-weight: bold;
+            font-size: 0.9em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: white;
+            padding: 5px;
+        }
+
+        .label-1 { top: 25%; left: 60%; transform: rotate(45deg); }
+        .label-2 { top: 60%; left: 60%; transform: rotate(135deg); }
+        .label-3 { top: 60%; left: 10%; transform: rotate(225deg); }
+        .label-4 { top: 25%; left: 10%; transform: rotate(315deg); }
+
+        .center-circle {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .pointer {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-bottom: 50px solid #ff6b6b;
+            position: absolute;
+            top: -35px;
             left: 50%;
             transform: translateX(-50%);
+            z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+            animation: pointerBounce 2s ease-in-out infinite;
         }
+
+        @keyframes pointerBounce {
+            0%, 100% { top: -35px; }
+            50% { top: -40px; }
+        }
+
         .button {
             display: block;
             width: 80%;
             max-width: 300px;
-            padding: 15px;
-            margin: 10px auto;
-            font-size: 18px;
+            padding: 18px 35px;
+            margin: 20px auto;
+            font-size: 1.3em;
+            font-weight: bold;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             cursor: pointer;
             color: white;
-            background-color: #333;
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .output {
-            font-size: 20px;
-            margin-top: 20px;
-            color: #555;
+
+        .button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 500px;
+            min-height: 120px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .result-category {
+            font-size: 1.5em;
             font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffd93d;
+        }
+
+        .result-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: white;
+        }
+
+        .score-display {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #ffd93d;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .history {
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .history-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            border-left: 4px solid;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .history-item.red { border-color: #ff6b6b; }
+        .history-item.blue { border-color: #4ecdc4; }
+        .history-item.green { border-color: #95e1d3; }
+        .history-item.yellow { border-color: #ffd93d; }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd93d;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .subtitle { font-size: 1em; }
+            .game-area { flex-direction: column; }
+            .stats-section { flex: 1; max-width: 100%; }
+            .wheel-container { max-width: 350px; }
+        }
+
+        /* Scrollbar */
+        .history::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .history::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .history::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .history::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
 </head>
 <body>
 
-    <h1>Tap & Play - Spin the Wheel</h1>
-    <p>Tap to spin the wheel and see what you get!</p>
+    <div class="container">
+        <h1>🎡 Tap & Play - Spin the Wheel</h1>
+        <p class="subtitle">Tap to spin the wheel and discover your fortune!</p>
 
-    <div class="wheel-container">
-        <div class="pointer"></div>
-        <div class="wheel" id="wheel"></div>
+        <div class="game-area">
+            <div class="wheel-section">
+                <div class="wheel-container">
+                    <div class="pointer"></div>
+                    <div class="wheel" id="wheel">
+                        <div class="wheel-segment segment-1"></div>
+                        <div class="wheel-segment segment-2"></div>
+                        <div class="wheel-segment segment-3"></div>
+                        <div class="wheel-segment segment-4"></div>
+
+                        <div class="segment-label label-1">Compliment</div>
+                        <div class="segment-label label-2">Dare</div>
+                        <div class="segment-label label-3">Fortune</div>
+                        <div class="segment-label label-4">Question</div>
+
+                        <div class="center-circle">SPIN</div>
+                    </div>
+                </div>
+
+                <button class="button" id="spinBtn" onclick="spinWheel()">🎲 Spin the Wheel</button>
+
+                <div class="result-box" id="resultBox" style="display: none;">
+                    <div class="result-category" id="resultCategory"></div>
+                    <div class="result-text" id="resultText"></div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h3>🏆 Your Score</h3>
+                <div class="score-display" id="score">0</div>
+
+                <div class="history">
+                    <div class="history-title">📜 Spin History</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <button class="button" onclick="spinWheel()">Spin the Wheel</button>
-
-    <p class="output" id="result"></p>
-
     <script>
-        function spinWheel() {
-            let wheel = document.getElementById("wheel");
-            let resultText = document.getElementById("result");
+        let score = 0;
+        let spinCount = 0;
+        let isSpinning = false;
+        let totalRotation = 0;
 
-            let randomSpin = 3600 + Math.floor(Math.random() * 1440);
-            wheel.style.transform = `rotate(${randomSpin}deg)`;
+        const categories = [
+            { name: 'Compliment', color: 'red', emoji: '❤️', points: 10 },
+            { name: 'Mystery Dare', color: 'blue', emoji: '🎭', points: 20 },
+            { name: 'Fortune', color: 'green', emoji: '🍀', points: 15 },
+            { name: 'Would You Rather?', color: 'yellow', emoji: '🤔', points: 15 }
+        ];
+
+        function playSound(frequency, duration) {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#95e1d3', '#ffd93d', '#fff'];
+            const confettiCount = 50;
+
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.width = Math.random() * 10 + 5 + 'px';
+                    confetti.style.height = Math.random() * 10 + 5 + 'px';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.opacity = '1';
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.animation = `confetti-fall ${Math.random() * 2 + 2}s linear forwards`;
+                    confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    confetti.style.zIndex = '1000';
+
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        function addToHistory(category, text) {
+            const historyList = document.getElementById('historyList');
+            const item = document.createElement('div');
+            item.className = `history-item ${category.color}`;
+            item.innerHTML = `
+                <strong>${category.emoji} ${category.name}</strong><br>
+                <small>${text.substring(0, 50)}${text.length > 50 ? '...' : ''}</small>
+            `;
+            historyList.insertBefore(item, historyList.firstChild);
+
+            // Keep only last 10 items
+            while (historyList.children.length > 10) {
+                historyList.removeChild(historyList.lastChild);
+            }
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            const wheel = document.getElementById("wheel");
+            const resultBox = document.getElementById("resultBox");
+            const spinBtn = document.getElementById("spinBtn");
+
+            spinBtn.disabled = true;
+            resultBox.style.display = 'none';
+
+            // Play spin sound
+            playSound(400, 0.1);
+            setTimeout(() => playSound(500, 0.1), 200);
+
+            // Random spin between 5-8 full rotations plus random angle
+            const spins = 5 + Math.random() * 3;
+            const randomDegree = Math.random() * 360;
+            const spinAmount = (spins * 360) + randomDegree;
+            totalRotation += spinAmount;
+
+            wheel.style.transform = `rotate(${totalRotation}deg)`;
 
             setTimeout(() => {
-                let finalDegree = (randomSpin % 360);
-                let category = "";
+                const finalDegree = (totalRotation % 360);
+                let categoryIndex;
+
+                // Determine which segment (adjusted for rotation)
                 if (finalDegree >= 0 && finalDegree < 90) {
-                    category = "Red - Compliment";
-                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(compliments);
+                    categoryIndex = 0; // Red
                 } else if (finalDegree >= 90 && finalDegree < 180) {
-                    category = "Blue - Mystery Dare";
-                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(dares);
+                    categoryIndex = 1; // Blue
                 } else if (finalDegree >= 180 && finalDegree < 270) {
-                    category = "Green - Fortune";
-                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(fortunes);
+                    categoryIndex = 2; // Green
                 } else {
-                    category = "Yellow - Would You Rather?";
-                    resultText.innerText = `You landed on: ${category}!\n` + getRandom(questions);
+                    categoryIndex = 3; // Yellow
                 }
-            }, 3000);
+
+                const category = categories[categoryIndex];
+                let resultText;
+
+                switch(categoryIndex) {
+                    case 0: resultText = getRandom(compliments); break;
+                    case 1: resultText = getRandom(dares); break;
+                    case 2: resultText = getRandom(fortunes); break;
+                    case 3: resultText = getRandom(questions); break;
+                }
+
+                // Update score
+                score += category.points;
+                spinCount++;
+                document.getElementById('score').textContent = score;
+
+                // Show result
+                document.getElementById('resultCategory').textContent = `${category.emoji} ${category.name}`;
+                document.getElementById('resultText').textContent = resultText;
+                resultBox.style.display = 'block';
+
+                // Add to history
+                addToHistory(category, resultText);
+
+                // Play victory sound and show confetti
+                playSound(523, 0.2);
+                setTimeout(() => playSound(659, 0.2), 100);
+                setTimeout(() => playSound(784, 0.3), 200);
+                createConfetti();
+
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }, 4000);
         }
 
         function getRandom(arr) {
@@ -112,36 +551,36 @@
         }
 
         const compliments = [
-    "You're an amazing person!", "You light up the room!", "Your energy is contagious!", "You inspire those around you!", "You have a heart of gold!",
-    "You make the world a better place!", "Your kindness is appreciated!", "Your laughter is the best sound!", "You're a great friend!", "You bring joy to everyone!",
-    "Your positivity is infectious!", "You have a wonderful sense of humor!", "You are incredibly talented!", "You make people feel special!", "You brighten up any room!",
-    "You have a great personality!", "Your kindness is unmatched!", "You always know how to make people smile!", "You're such a thoughtful person!", "You have a heartwarming smile!",
-    "Your presence makes the world better!", "You're a great listener!", "You have a kind soul!", "You're always so helpful!", "You're a beacon of light to those around you!"
-];
+            "You're an amazing person!", "You light up the room!", "Your energy is contagious!", "You inspire those around you!", "You have a heart of gold!",
+            "You make the world a better place!", "Your kindness is appreciated!", "Your laughter is the best sound!", "You're a great friend!", "You bring joy to everyone!",
+            "Your positivity is infectious!", "You have a wonderful sense of humor!", "You are incredibly talented!", "You make people feel special!", "You brighten up any room!",
+            "You have a great personality!", "Your kindness is unmatched!", "You always know how to make people smile!", "You're such a thoughtful person!", "You have a heartwarming smile!",
+            "Your presence makes the world better!", "You're a great listener!", "You have a kind soul!", "You're always so helpful!", "You're a beacon of light to those around you!"
+        ];
 
         const dares = [
-    "Do 10 jumping jacks!", "Sing a song in a funny voice!", "Act like a robot for 20 seconds!", "Tell a joke to the person next to you!", "Try to balance a spoon on your nose!",
-    "Dance for 30 seconds!", "Make an animal sound!", "Send a funny GIF to a friend!", "Spin around 5 times and try to walk straight!", "Do your best celebrity impression!",
-    "Make a silly face and take a selfie!", "Pretend to be a superhero for 10 seconds!", "Do 10 squats!", "Say a tongue twister 5 times fast!", "Try to whistle a song!",
-    "Do a random act of kindness today!", "Talk in an accent for the next minute!", "Act like your favorite cartoon character!", "Give a compliment to a stranger!", "Tell a funny childhood story!",
-    "Take a sip of water and gargle a song!", "Hop on one foot for 20 seconds!", "Try to balance on one leg for 30 seconds!", "Make up a dance move and perform it!", "Say the alphabet backward!"
-];
+            "Do 10 jumping jacks!", "Sing a song in a funny voice!", "Act like a robot for 20 seconds!", "Tell a joke to the person next to you!", "Try to balance a spoon on your nose!",
+            "Dance for 30 seconds!", "Make an animal sound!", "Send a funny GIF to a friend!", "Spin around 5 times and try to walk straight!", "Do your best celebrity impression!",
+            "Make a silly face and take a selfie!", "Pretend to be a superhero for 10 seconds!", "Do 10 squats!", "Say a tongue twister 5 times fast!", "Try to whistle a song!",
+            "Do a random act of kindness today!", "Talk in an accent for the next minute!", "Act like your favorite cartoon character!", "Give a compliment to a stranger!", "Tell a funny childhood story!",
+            "Take a sip of water and gargle a song!", "Hop on one foot for 20 seconds!", "Try to balance on one leg for 30 seconds!", "Make up a dance move and perform it!", "Say the alphabet backward!"
+        ];
 
         const fortunes = [
-    "You will receive good news soon!", "A great opportunity is coming!", "Someone is thinking about you!", "Your dreams will come true!", "Success is in your future!",
-    "Adventure awaits you!", "You will make a new friend soon!", "Your hard work will pay off!", "Something exciting will happen today!", "A financial boost is on the way!",
-    "A fun surprise is in store for you!", "You will accomplish a long-term goal!", "An unexpected gift is coming your way!", "You will soon cross paths with a mentor!", "A long-lost friend will reconnect with you!",
-    "Your efforts will be recognized!", "You will soon embark on an exciting journey!", "Happiness is around the corner!", "An old dream will soon come true!", "Your energy will attract positive experiences!",
-    "A mystery in your life will soon be solved!", "You will feel more inspired than ever!", "Your creativity will lead to something amazing!", "A lucky break is headed your way!", "Good health and happiness are in your future!"
-];
+            "You will receive good news soon!", "A great opportunity is coming!", "Someone is thinking about you!", "Your dreams will come true!", "Success is in your future!",
+            "Adventure awaits you!", "You will make a new friend soon!", "Your hard work will pay off!", "Something exciting will happen today!", "A financial boost is on the way!",
+            "A fun surprise is in store for you!", "You will accomplish a long-term goal!", "An unexpected gift is coming your way!", "You will soon cross paths with a mentor!", "A long-lost friend will reconnect with you!",
+            "Your efforts will be recognized!", "You will soon embark on an exciting journey!", "Happiness is around the corner!", "An old dream will soon come true!", "Your energy will attract positive experiences!",
+            "A mystery in your life will soon be solved!", "You will feel more inspired than ever!", "Your creativity will lead to something amazing!", "A lucky break is headed your way!", "Good health and happiness are in your future!"
+        ];
 
         const questions = [
-    "Would you rather be able to fly or be invisible?", "Would you rather never need sleep or never need food?", "Would you rather explore space or the deep sea?", "Would you rather have super strength or super speed?", "Would you rather live 100 years in the future or 100 years in the past?",
-    "Would you rather always have to sing when you talk or dance when you walk?", "Would you rather be a famous actor or a famous scientist?", "Would you rather have a pet dragon or a pet unicorn?", "Would you rather be a wizard or a superhero?", "Would you rather have unlimited ice cream or unlimited pizza?",
-    "Would you rather only be able to whisper or only be able to shout?", "Would you rather be able to talk to animals or read people's minds?", "Would you rather live in a treehouse or an underwater home?", "Would you rather be best friends with a celebrity or be a celebrity yourself?", "Would you rather always have to wear clown shoes or a clown nose?",
-    "Would you rather never be able to eat chocolate again or never eat pizza again?", "Would you rather only use emojis to text or only be able to talk in rhymes?", "Would you rather have a rewind button in life or a pause button?", "Would you rather be stuck in a comedy movie or an action movie?", "Would you rather have 3 wishes with limitations or 1 wish with no limits?",
-    "Would you rather have to wear the same outfit forever or never be able to wear the same thing twice?", "Would you rather live in the mountains or by the beach?", "Would you rather always have to walk backward or always have to talk backward?", "Would you rather never have to do laundry or never have to do dishes?", "Would you rather always have perfect weather or always have weekends last twice as long?"
-];
+            "Would you rather be able to fly or be invisible?", "Would you rather never need sleep or never need food?", "Would you rather explore space or the deep sea?", "Would you rather have super strength or super speed?", "Would you rather live 100 years in the future or 100 years in the past?",
+            "Would you rather always have to sing when you talk or dance when you walk?", "Would you rather be a famous actor or a famous scientist?", "Would you rather have a pet dragon or a pet unicorn?", "Would you rather be a wizard or a superhero?", "Would you rather have unlimited ice cream or unlimited pizza?",
+            "Would you rather only be able to whisper or only be able to shout?", "Would you rather be able to talk to animals or read people's minds?", "Would you rather live in a treehouse or an underwater home?", "Would you rather be best friends with a celebrity or be a celebrity yourself?", "Would you rather always have to wear clown shoes or a clown nose?",
+            "Would you rather never be able to eat chocolate again or never eat pizza again?", "Would you rather only use emojis to text or only be able to talk in rhymes?", "Would you rather have a rewind button in life or a pause button?", "Would you rather be stuck in a comedy movie or an action movie?", "Would you rather have 3 wishes with limitations or 1 wish with no limits?",
+            "Would you rather have to wear the same outfit forever or never be able to wear the same thing twice?", "Would you rather live in the mountains or by the beach?", "Would you rather always have to walk backward or always have to talk backward?", "Would you rather never have to do laundry or never have to do dishes?", "Would you rather always have perfect weather or always have weekends last twice as long?"
+        ];
     </script>
 
 </body>
