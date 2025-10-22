@@ -940,11 +940,11 @@
             const nameScreen = document.getElementById('nameScreen');
 
             // Hide pickup screen
-            pickupScreen.style.display = 'none';
+            pickupScreen.style.setProperty('display', 'none', 'important');
             pickupScreen.classList.add('hidden');
 
             // Show name screen
-            nameScreen.style.display = 'block';
+            nameScreen.style.setProperty('display', 'block', 'important');
             nameScreen.classList.add('active');
         }
 
@@ -960,11 +960,11 @@
             const quizScreen = document.getElementById('quizScreen');
 
             // Hide name screen
-            nameScreen.style.display = 'none';
+            nameScreen.style.setProperty('display', 'none', 'important');
             nameScreen.classList.remove('active');
 
             // Show quiz screen
-            quizScreen.style.display = 'block';
+            quizScreen.style.setProperty('display', 'block', 'important');
             quizScreen.classList.add('active');
 
             showQuestion();
@@ -1035,11 +1035,11 @@
             const connectionScreen = document.getElementById('connectionScreen');
 
             // Hide quiz screen
-            quizScreen.style.display = 'none';
+            quizScreen.style.setProperty('display', 'none', 'important');
             quizScreen.classList.remove('active');
 
             // Show connection screen
-            connectionScreen.style.display = 'block';
+            connectionScreen.style.setProperty('display', 'block', 'important');
             connectionScreen.classList.add('active');
         }
 
@@ -1060,11 +1060,11 @@
             const resultsScreen = document.getElementById('resultsScreen');
 
             // Hide connection screen
-            connectionScreen.style.display = 'none';
+            connectionScreen.style.setProperty('display', 'none', 'important');
             connectionScreen.classList.remove('active');
 
             // Show results screen
-            resultsScreen.style.display = 'block';
+            resultsScreen.style.setProperty('display', 'block', 'important');
             resultsScreen.classList.add('active');
 
             // Animate score
@@ -1213,15 +1213,15 @@
             guyQualities = {};
 
             // Hide all screens
-            document.getElementById('resultsScreen').style.display = 'none';
+            document.getElementById('resultsScreen').style.setProperty('display', 'none', 'important');
             document.getElementById('resultsScreen').classList.remove('active');
-            document.getElementById('nameScreen').style.display = 'none';
-            document.getElementById('quizScreen').style.display = 'none';
-            document.getElementById('connectionScreen').style.display = 'none';
+            document.getElementById('nameScreen').style.setProperty('display', 'none', 'important');
+            document.getElementById('quizScreen').style.setProperty('display', 'none', 'important');
+            document.getElementById('connectionScreen').style.setProperty('display', 'none', 'important');
 
             // Show pickup screen
             const pickupScreen = document.getElementById('pickupScreen');
-            pickupScreen.style.display = 'block';
+            pickupScreen.style.setProperty('display', 'block', 'important');
             pickupScreen.classList.remove('hidden');
 
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
