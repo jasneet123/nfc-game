@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Check ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            opacity: 0.3;
+            animation: floatUp 15s infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            animation: cardSlideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Pickup Line Screen */
+        .pickup-screen {
+            display: block;
+        }
+
+        .pickup-screen.hidden {
+            display: none;
+        }
+
+        .pickup-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: emojiPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes emojiPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        .pickup-line {
+            font-size: 1.7em;
+            font-weight: bold;
+            line-height: 1.6;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(1.3);
+            }
+        }
+
+        .pickup-subtext {
+            font-size: 1.15em;
+            opacity: 0.95;
+            margin: 25px 0;
+            line-height: 1.6;
+        }
+
+        /* Name Input Screen */
+        .name-screen {
+            display: none;
+        }
+
+        .name-screen.active {
+            display: block;
+            animation: fadeSlideIn 0.6s ease;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .screen-title {
+            font-size: 2.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #fff, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .screen-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-size: 1.4em;
+            text-align: center;
+            font-weight: 600;
+            margin: 25px 0;
+            transition: all 0.3s ease;
+        }
+
+        .name-input:focus {
+            outline: none;
+            border-color: #ffd93d;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 217, 61, 0.4);
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Quiz Screen */
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-screen.active {
+            display: block;
+            animation: fadeSlideIn 0.5s ease;
+        }
+
+        .progress-container {
+            margin-bottom: 35px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd93d, #ff6b9d, #667eea);
+            background-size: 200% 100%;
+            border-radius: 10px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: progressShimmer 3s ease infinite;
+            box-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
+        }
+
+        @keyframes progressShimmer {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        .question-container {
+            margin: 30px 0;
+        }
+
+        .question-number {
+            font-size: 0.95em;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .question-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+            display: inline-block;
+            animation: questionBounce 0.6s ease;
+        }
+
+        @keyframes questionBounce {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+            50% {
+                transform: scale(1.2) rotate(10deg);
+            }
+        }
+
+        .question-text {
+            font-size: 1.65em;
+            font-weight: bold;
+            margin: 25px 0 40px 0;
+            line-height: 1.5;
+            animation: textFadeIn 0.5s ease;
+        }
+
+        @keyframes textFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px 15px;
+            font-size: 1.1em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 600;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffd93d;
+            transform: translateX(8px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .option-btn.selected {
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.4), rgba(255, 107, 157, 0.4));
+            border-color: #ffd93d;
+            transform: scale(1.03);
+            animation: optionPop 0.4s ease;
+        }
+
+        @keyframes optionPop {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+        }
+
+        /* Connection Building Screen */
+        .connection-screen {
+            display: none;
+        }
+
+        .connection-screen.active {
+            display: block;
+            animation: fadeSlideIn 0.6s ease;
+        }
+
+        .connection-moment {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            border-radius: 25px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: cardGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes cardGlow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(255, 217, 61, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 40px rgba(255, 217, 61, 0.4);
+            }
+        }
+
+        .moment-text {
+            font-size: 1.2em;
+            line-height: 1.7;
+            margin: 15px 0;
+        }
+
+        .guy-qualities {
+            text-align: left;
+            margin: 25px 0;
+        }
+
+        .quality-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1em;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+
+        .quality-input:focus {
+            outline: none;
+            border-color: #ffd93d;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .quality-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .quality-label {
+            font-size: 0.95em;
+            margin: 15px 0 5px 5px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+        }
+
+        .results-screen.active {
+            display: block;
+            animation: resultsReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes resultsReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(-5deg);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .connection-score {
+            font-size: 7em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0;
+            text-shadow: 0 5px 30px rgba(255, 217, 61, 0.4);
+            animation: scorePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scorePulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: brightness(1);
+            }
+            50% {
+                transform: scale(1.08);
+                filter: brightness(1.2);
+            }
+        }
+
+        .connection-verdict {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1));
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .verdict-title {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            animation: titleShine 2s ease-in-out infinite;
+        }
+
+        @keyframes titleShine {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 217, 61, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(255, 217, 61, 0.6);
+            }
+        }
+
+        .verdict-text {
+            font-size: 1.15em;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .shared-interests {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .interests-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .interest-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 12px 0;
+            border-left: 4px solid #ffd93d;
+            animation: interestSlideIn 0.5s ease;
+        }
+
+        @keyframes interestSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .guy-profile {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .profile-item {
+            text-align: left;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .profile-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .profile-value {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .connection-invitation {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+        }
+
+        .invitation-text {
+            font-size: 1.15em;
+            line-height: 1.7;
+            margin: 20px 0;
+            opacity: 0.95;
+        }
+
+        .social-input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .social-input:focus {
+            outline: none;
+            border-color: #ffd93d;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 217, 61, 0.4);
+        }
+
+        .social-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 50px;
+            font-size: 1.25em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 35px rgba(238, 90, 111, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 45px rgba(238, 90, 111, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+            font-size: 1em;
+            padding: 15px 40px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .celebration-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 2em;
+            animation: particleFloat 3s ease-out forwards;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-300px) scale(0.5) rotate(360deg);
+            }
+        }
+
+        .saved-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 18px 35px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2000;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .saved-notice.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <div class="container">
+        <div class="card">
+            <!-- Pickup Line Screen -->
+            <div class="pickup-screen" id="pickupScreen">
+                <div class="pickup-emoji">✨</div>
+                <div class="pickup-line" id="pickupLineText">
+                    Hey, I know this might sound random...
+                    <br><br>
+                    But I think we might actually vibe
+                </div>
+                <div class="pickup-subtext">
+                    Want to find out if there's something real here? Takes 2 minutes, no pressure 😊
+                </div>
+                <button class="btn" onclick="showNameScreen()">I'm Curious 👀</button>
+            </div>
+
+            <!-- Name Input Screen -->
+            <div class="name-screen" id="nameScreen">
+                <div style="font-size: 3.5em; margin-bottom: 15px;">💫</div>
+                <h1 class="screen-title">Let's Start Simple</h1>
+                <p class="screen-subtitle">
+                    I want to know the real you, not just surface stuff.
+                    <br><br>
+                    This isn't about games - it's about seeing if we actually connect.
+                </p>
+                <input type="text" class="name-input" id="herNameInput" placeholder="What's your name?" maxlength="20">
+                <button class="btn" onclick="startQuestions()">Let's See ✨</button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div class="quiz-screen" id="quizScreen">
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text" id="progressText"></div>
+                </div>
+
+                <div class="question-container">
+                    <div class="question-number" id="questionNumber"></div>
+                    <div class="question-emoji" id="questionEmoji"></div>
+                    <div class="question-text" id="questionText"></div>
+                    <div class="options" id="optionsContainer"></div>
+                </div>
+            </div>
+
+            <!-- Guy's Profile Screen -->
+            <div class="connection-screen" id="connectionScreen">
+                <div style="font-size: 3em; margin-bottom: 15px;">🌟</div>
+                <h2 class="screen-title">Fair is Fair</h2>
+                <p class="screen-subtitle">
+                    You shared yourself with me. Let me share a bit about who I am too.
+                </p>
+
+                <div class="connection-moment">
+                    <p class="moment-text">
+                        Real talk - I'm not perfect, but I know what I'm looking for and I think you might actually be that person.
+                    </p>
+                </div>
+
+                <div class="guy-qualities">
+                    <div class="quality-label">What makes you different? ✨</div>
+                    <input type="text" class="quality-input" id="quality1" placeholder="e.g., I actually listen and remember little details">
+
+                    <div class="quality-label">What are you passionate about? 🔥</div>
+                    <input type="text" class="quality-input" id="quality2" placeholder="e.g., Building my own business / Making music">
+
+                    <div class="quality-label">What can you offer in a relationship? 💫</div>
+                    <input type="text" class="quality-input" id="quality3" placeholder="e.g., Loyalty, adventure, someone who actually texts back">
+                </div>
+
+                <button class="btn" onclick="showResults()">See If We Connect 💭</button>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen" id="resultsScreen">
+                <div style="font-size: 3.5em; margin-bottom: 10px;" id="resultEmoji">💫</div>
+                <div style="font-size: 1.2em; opacity: 0.9; margin-bottom: 10px;">Connection Potential</div>
+                <div class="connection-score" id="connectionScore">0%</div>
+
+                <div class="connection-verdict">
+                    <div class="verdict-title" id="verdictTitle">There's Something Here...</div>
+                    <div class="verdict-text" id="verdictText"></div>
+                </div>
+
+                <div class="shared-interests">
+                    <div class="interests-title">🎯 What Clicked</div>
+                    <div id="interestsList"></div>
+                </div>
+
+                <div class="guy-profile" id="guyProfile">
+                    <div class="profile-title">A Bit About Me</div>
+                    <div id="profileContent"></div>
+                </div>
+
+                <div class="connection-invitation">
+                    <div style="font-size: 2.5em; margin-bottom: 15px;">💭</div>
+                    <p class="invitation-text">
+                        Look, I don't usually do this... but this actually felt different.
+                        <br><br>
+                        If you felt it too, I'd really like to take you out sometime. No expectations, just seeing where this goes.
+                    </p>
+                    <input type="text" class="social-input" id="socialInput" placeholder="Your Instagram or number?">
+                    <button class="btn" onclick="saveConnection()">Yeah, Let's See Where This Goes</button>
+                </div>
+
+                <button class="btn-secondary btn" onclick="restart()">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="celebration-particles" id="celebrationParticles"></div>
+    <div class="saved-notice" id="savedNotice">
+        ✨ Got it. I'll reach out soon
+    </div>
+
+    <script>
+        // Create floating hearts background
+        function createFloatingHearts() {
+            const container = document.getElementById('floatingHearts');
+            const hearts = ['💕', '💖', '💗', '💓', '💝'];
+
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'em';
+                container.appendChild(heart);
+            }
+        }
+        createFloatingHearts();
+
+        // Pickup Lines
+        const pickupLines = [
+            "Hey, I know this might sound random...\n\nBut I think we might actually vibe",
+            "Okay so...\n\nI don't usually do this, but you caught my attention",
+            "Real talk for a second...\n\nI think there might be something here worth exploring",
+            "Can I be honest?\n\nYou seem like someone I'd actually want to get to know",
+            "So here's the thing...\n\nI felt like I had to at least try to talk to you"
+        ];
+
+        // Game State
+        let currentQuestion = 0;
+        let answers = [];
+        let herName = '';
+        let guyQualities = {};
+
+        // Questions (designed for emotional connection)
+        const questions = [
+            {
+                emoji: "🌅",
+                text: "What does a perfect day look like for you?",
+                options: [
+                    { text: "Adventure - new experiences, exploring", value: "adventure", connection: 4 },
+                    { text: "Balance - productive but also chill", value: "balance", connection: 5 },
+                    { text: "Social - quality time with people I love", value: "social", connection: 4 },
+                    { text: "Peace - doing what makes me happy", value: "peace", connection: 3 }
+                ]
+            },
+            {
+                emoji: "💭",
+                text: "When you're stressed, you need someone who:",
+                options: [
+                    { text: "Gives you space but checks in", value: "space", connection: 5 },
+                    { text: "Distracts you with fun stuff", value: "distract", connection: 3 },
+                    { text: "Lets you vent and really listens", value: "listen", connection: 5 },
+                    { text: "Solves problems with you", value: "solve", connection: 4 }
+                ]
+            },
+            {
+                emoji: "❤️",
+                text: "How do you show someone you care?",
+                options: [
+                    { text: "Quality time - being present", value: "time", connection: 5 },
+                    { text: "Words - saying how I feel", value: "words", connection: 4 },
+                    { text: "Actions - doing things for them", value: "actions", connection: 4 },
+                    { text: "Physical affection - touch", value: "touch", connection: 3 }
+                ]
+            },
+            {
+                emoji: "🎯",
+                text: "What matters most to you in life?",
+                options: [
+                    { text: "Growth - becoming my best self", value: "growth", connection: 5 },
+                    { text: "Connection - deep relationships", value: "connection", connection: 5 },
+                    { text: "Freedom - living on my terms", value: "freedom", connection: 4 },
+                    { text: "Impact - making a difference", value: "impact", connection: 4 }
+                ]
+            },
+            {
+                emoji: "🌟",
+                text: "In a relationship, you value:",
+                options: [
+                    { text: "Trust and honesty above all", value: "trust", connection: 5 },
+                    { text: "Being able to be yourself", value: "authentic", connection: 5 },
+                    { text: "Feeling supported and believed in", value: "support", connection: 4 },
+                    { text: "Laughter and not taking life too seriously", value: "fun", connection: 4 }
+                ]
+            },
+            {
+                emoji: "💫",
+                text: "The thing that would make you lose interest:",
+                options: [
+                    { text: "Dishonesty or playing games", value: "games", connection: 5 },
+                    { text: "Not making effort or caring", value: "effort", connection: 5 },
+                    { text: "Being close-minded or judgmental", value: "judgment", connection: 4 },
+                    { text: "Not being genuine or real", value: "fake", connection: 5 }
+                ]
+            }
+        ];
+
+        // Initialize
+        window.onload = function() {
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+        };
+
+        function showNameScreen() {
+            document.getElementById('pickupScreen').classList.add('hidden');
+            document.getElementById('nameScreen').classList.add('active');
+        }
+
+        function startQuestions() {
+            herName = document.getElementById('herNameInput').value.trim();
+
+            if (herName.length < 2) {
+                alert('Hey, I really want to know your name 😊');
+                return;
+            }
+
+            document.getElementById('nameScreen').classList.remove('active');
+            document.getElementById('quizScreen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+
+            document.getElementById('questionNumber').textContent = `${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('questionEmoji').textContent = question.emoji;
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('progressText').textContent = `${Math.round((currentQuestion / questions.length) * 100)}% Complete`;
+
+            // Trigger emoji animation
+            const emojiEl = document.getElementById('questionEmoji');
+            emojiEl.style.animation = 'none';
+            setTimeout(() => {
+                emojiEl.style.animation = 'questionBounce 0.6s ease';
+            }, 10);
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.text;
+                btn.style.animationDelay = (index * 0.1) + 's';
+                btn.onclick = () => selectAnswer(option);
+                optionsContainer.appendChild(btn);
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function selectAnswer(option) {
+            // Visual feedback
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === option.text) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            answers.push(option);
+
+            // Create particles
+            createParticles('✨');
+
+            setTimeout(() => {
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+                    showQuestion();
+                } else {
+                    showConnectionScreen();
+                }
+            }, 400);
+        }
+
+        function showConnectionScreen() {
+            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('connectionScreen').classList.add('active');
+        }
+
+        function showResults() {
+            // Get guy's qualities
+            guyQualities = {
+                quality1: document.getElementById('quality1').value.trim() || "Someone who actually cares",
+                quality2: document.getElementById('quality2').value.trim() || "Chasing my goals",
+                quality3: document.getElementById('quality3').value.trim() || "Real connection, not games"
+            };
+
+            // Calculate connection score
+            const totalConnection = answers.reduce((sum, answer) => sum + answer.connection, 0);
+            const maxConnection = questions.length * 5;
+            const connectionScore = Math.round((totalConnection / maxConnection) * 100);
+
+            document.getElementById('connectionScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+
+            // Animate score
+            animateScore(connectionScore);
+
+            // Set verdict
+            let emoji, title, text;
+
+            if (connectionScore >= 85) {
+                emoji = '💕';
+                title = `${herName}, This Feels Real`;
+                text = `${connectionScore}% connection is rare. Like, really rare. The way you answered these questions... I felt that. We're on the same wavelength and that doesn't happen often.`;
+            } else if (connectionScore >= 70) {
+                emoji = '✨';
+                title = 'There's Definitely Something Here';
+                text = `${connectionScore}% means we vibe on a deeper level than most people do. Not gonna lie, I'm actually excited to see where this could go.`;
+            } else if (connectionScore >= 55) {
+                emoji = '🌟';
+                title = 'Interesting Connection';
+                text = `${connectionScore}% shows potential. We might be different in some ways, but sometimes that's exactly what makes it work. Worth exploring for sure.`;
+            } else {
+                emoji = '💭';
+                title = 'Different Vibes, But...';
+                text = `${connectionScore}% suggests we see things differently, but honestly? Some of the best connections come from unexpected places. I'd still like to get to know you.`;
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('verdictTitle').textContent = title;
+            document.getElementById('verdictText').textContent = text;
+
+            // Show shared interests
+            const interests = [
+                `You value ${answers[1].value === 'listen' ? 'deep listening' : answers[1].value} - I respect that`,
+                `${answers[3].text.split(' - ')[1]} resonates with me too`,
+                `We both want ${answers[4].value} in relationships`
+            ];
+
+            const interestsList = document.getElementById('interestsList');
+            interestsList.innerHTML = '';
+            interests.forEach((interest, index) => {
+                setTimeout(() => {
+                    const item = document.createElement('div');
+                    item.className = 'interest-item';
+                    item.textContent = interest;
+                    interestsList.appendChild(item);
+                }, index * 200);
+            });
+
+            // Show guy's profile
+            const profileContent = document.getElementById('profileContent');
+            profileContent.innerHTML = `
+                <div class="profile-item">
+                    <div class="profile-label">What makes me different:</div>
+                    <div class="profile-value">${guyQualities.quality1}</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">What I'm passionate about:</div>
+                    <div class="profile-value">${guyQualities.quality2}</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">What I bring:</div>
+                    <div class="profile-value">${guyQualities.quality3}</div>
+                </div>
+            `;
+
+            // Celebration
+            createCelebration();
+        }
+
+        function animateScore(targetScore) {
+            let currentScore = 0;
+            const scoreElement = document.getElementById('connectionScore');
+            const duration = 2000;
+            const increment = targetScore / (duration / 16);
+
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(timer);
+                }
+                scoreElement.textContent = Math.round(currentScore) + '%';
+            }, 16);
+        }
+
+        function createParticles(emoji) {
+            const container = document.getElementById('celebrationParticles');
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = emoji;
+                particle.style.left = (Math.random() * 100) + '%';
+                particle.style.top = (Math.random() * 100) + '%';
+                container.appendChild(particle);
+
+                setTimeout(() => particle.remove(), 3000);
+            }
+        }
+
+        function createCelebration() {
+            const emojis = ['✨', '💫', '⭐', '🌟', '💕', '💖'];
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    createParticles(emojis[Math.floor(Math.random() * emojis.length)]);
+                }, i * 100);
+            }
+        }
+
+        function saveConnection() {
+            const social = document.getElementById('socialInput').value.trim();
+
+            if (social.length < 3) {
+                alert('Hey, I need a way to reach you 😊');
+                return;
+            }
+
+            // Save to localStorage
+            const connections = JSON.parse(localStorage.getItem('connectionCheckData') || '[]');
+            const connectionScore = document.getElementById('connectionScore').textContent;
+
+            connections.push({
+                name: herName,
+                contact: social,
+                score: connectionScore,
+                answers: answers.map(a => a.value),
+                guyQualities: guyQualities,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem('connectionCheckData', JSON.stringify(connections));
+
+            // Show notification
+            const notice = document.getElementById('savedNotice');
+            notice.classList.add('show');
+            setTimeout(() => notice.classList.remove('show'), 3000);
+
+            // Update input
+            document.getElementById('socialInput').value = '';
+            document.getElementById('socialInput').placeholder = `Got it, ${herName}. Talk soon ✨`;
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            answers = [];
+            herName = '';
+            guyQualities = {};
+
+            document.getElementById('resultsScreen').classList.remove('active');
+            document.getElementById('pickupScreen').classList.remove('hidden');
+
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+
+            document.getElementById('herNameInput').value = '';
+            document.getElementById('socialInput').placeholder = 'Your Instagram or number?';
+
+            ['quality1', 'quality2', 'quality3'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+        }
+
+        // Console helper
+        console.log('💾 View saved connections: JSON.parse(localStorage.getItem("connectionCheckData"))');
+    </script>
+</body>
+</html>
