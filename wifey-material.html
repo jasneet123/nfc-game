@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wifey Material Test 💍</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #ff6b9d 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Pickup Line Screen */
+        .pickup-screen {
+            display: block;
+        }
+
+        .pickup-screen.hidden {
+            display: none;
+        }
+
+        .pickup-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .pickup-line {
+            font-size: 1.8em;
+            font-weight: bold;
+            line-height: 1.5;
+            margin: 30px 0;
+            color: #ffd93d;
+            text-shadow: 0 4px 20px rgba(255, 217, 61, 0.5);
+        }
+
+        .pickup-subtext {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        .sparkles {
+            position: absolute;
+            font-size: 2em;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Challenge Screen */
+        .challenge-screen {
+            display: none;
+        }
+
+        .challenge-screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .challenge-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #fff, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .challenge-description {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin: 25px 0;
+            opacity: 0.95;
+        }
+
+        .name-input-box {
+            margin: 30px 0;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Quiz Screen */
+        .quiz-screen {
+            display: none;
+        }
+
+        .quiz-screen.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            box-shadow: 0 0 15px rgba(255, 217, 61, 0.6);
+        }
+
+        .question-number {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .question-text {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin: 20px 0 35px 0;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 22px;
+            font-size: 1.15em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: #ffd93d;
+            transform: translateX(5px);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Results Screen */
+        .results-screen {
+            display: none;
+        }
+
+        .results-screen.active {
+            display: block;
+            animation: scaleIn 0.6s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .compatibility-score {
+            font-size: 6em;
+            font-weight: bold;
+            color: #ffd93d;
+            text-shadow: 0 5px 25px rgba(255, 217, 61, 0.6);
+            margin: 25px 0;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .verdict {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .verdict-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .verdict-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .compatibility-breakdown {
+            text-align: left;
+            margin: 25px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 25px;
+        }
+
+        .breakdown-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .breakdown-label {
+            font-weight: 600;
+        }
+
+        .breakdown-score {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #ffd93d;
+        }
+
+        .contact-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 3px dashed rgba(255, 255, 255, 0.4);
+        }
+
+        .contact-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .contact-subtitle {
+            font-size: 1em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .social-input {
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .social-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 35px rgba(238, 90, 111, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 45px rgba(238, 90, 111, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+            font-size: 1em;
+            padding: 15px 40px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .heart-animation {
+            position: fixed;
+            font-size: 2em;
+            animation: floatHeart 3s ease-out forwards;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0.5);
+            }
+        }
+
+        .saved-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #4CAF50;
+            padding: 18px 35px;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: transform 0.4s ease;
+            z-index: 1000;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .saved-notice.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Pickup Line Screen -->
+            <div class="pickup-screen" id="pickupScreen">
+                <div class="pickup-emoji">😏</div>
+                <div class="pickup-line" id="pickupLineText">
+                    Are you a magician?
+                    <br><br>
+                    Because whenever I look at you, everyone else disappears
+                </div>
+                <div class="pickup-subtext">
+                    But real talk... let's see if we're actually compatible
+                </div>
+                <button class="btn" onclick="showChallenge()">She's Down? Let's Find Out</button>
+            </div>
+
+            <!-- Challenge Accept Screen -->
+            <div class="challenge-screen" id="challengeScreen">
+                <div style="font-size: 4em; margin-bottom: 20px;">💍</div>
+                <h1 class="challenge-title">The Wifey Material Test</h1>
+                <p class="challenge-description">
+                    Quick 6 questions to see if y'all have future potential.
+                    <br><br>
+                    No cap, this thing is actually accurate 👀
+                </p>
+                <div class="name-input-box">
+                    <input type="text" class="name-input" id="herNameInput" placeholder="What's your name? 👀" maxlength="20">
+                </div>
+                <button class="btn" onclick="startTest()">Let's See 👀</button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div class="quiz-screen" id="quizScreen">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="question-number" id="questionNumber"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="results-screen" id="resultsScreen">
+                <div style="font-size: 3em; margin-bottom: 10px;" id="resultEmoji">💑</div>
+                <div style="font-size: 1.2em; opacity: 0.9;">Compatibility Score</div>
+                <div class="compatibility-score" id="compatibilityScore">0%</div>
+
+                <div class="verdict" id="verdictSection">
+                    <div class="verdict-title" id="verdictTitle">Perfect Match!</div>
+                    <div class="verdict-text" id="verdictText"></div>
+                </div>
+
+                <div class="compatibility-breakdown">
+                    <div class="breakdown-title">📊 The Breakdown</div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">🌟 Vibe Match</span>
+                        <span class="breakdown-score" id="vibeScore">0%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">💭 Communication</span>
+                        <span class="breakdown-score" id="commScore">0%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">🎯 Life Goals</span>
+                        <span class="breakdown-score" id="goalsScore">0%</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="breakdown-label">❤️ Chemistry</span>
+                        <span class="breakdown-score" id="chemScore">0%</span>
+                    </div>
+                </div>
+
+                <div class="contact-section">
+                    <div class="contact-title">Want the Full Analysis? 📱</div>
+                    <div class="contact-subtitle">I'll DM you the detailed breakdown with all your compatibility insights</div>
+                    <input type="text" class="social-input" id="socialInput" placeholder="Drop your IG @">
+                    <button class="btn" onclick="saveContact()">Send Me The Full Report</button>
+                </div>
+
+                <button class="btn-secondary btn" onclick="restart()">Test Someone Else</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="saved-notice" id="savedNotice">
+        ✅ Got it! Check your DMs soon 💬
+    </div>
+
+    <script>
+        // Pickup Lines Pool (randomize each time)
+        const pickupLines = [
+            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears",
+            "Do you believe in love at first sight?\n\nOr should I walk by again?",
+            "Are you a parking ticket?\n\nBecause you've got FINE written all over you",
+            "Is your name Google?\n\nBecause you have everything I've been searching for",
+            "Do you have a map?\n\nI keep getting lost in your eyes",
+            "Are you a camera?\n\nBecause every time I look at you, I smile",
+            "If you were a vegetable...\n\nYou'd be a cute-cumber",
+            "Are you Wi-Fi?\n\nBecause I'm feeling a connection"
+        ];
+
+        // Game State
+        let currentQuestion = 0;
+        let answers = [];
+        let herName = '';
+
+        // Questions (designed to be fun but reveal compatibility)
+        const questions = [
+            {
+                text: "Perfect Friday night for you?",
+                options: [
+                    { text: "🎉 Out with friends, making memories", points: 3 },
+                    { text: "🏠 Cozy night in, Netflix & chill", points: 2 },
+                    { text: "🍽️ Nice dinner, deep conversations", points: 4 },
+                    { text: "🎭 Something spontaneous & fun", points: 3 }
+                ]
+            },
+            {
+                text: "How do you handle disagreements?",
+                options: [
+                    { text: "💬 Talk it out immediately", points: 4 },
+                    { text: "⏰ Need space first, then talk", points: 3 },
+                    { text: "😌 Let it go if it's not serious", points: 2 },
+                    { text: "😤 Stand my ground always", points: 1 }
+                ]
+            },
+            {
+                text: "Your love language is probably:",
+                options: [
+                    { text: "💝 Gifts & thoughtful gestures", points: 3 },
+                    { text: "⏰ Quality time together", points: 4 },
+                    { text: "💬 Words of affirmation", points: 3 },
+                    { text: "🤗 Physical touch & affection", points: 4 }
+                ]
+            },
+            {
+                text: "When it comes to the future, you:",
+                options: [
+                    { text: "📝 Have a clear plan & goals", points: 4 },
+                    { text: "🌊 Go with the flow, see what happens", points: 2 },
+                    { text: "⚖️ Balance planning with spontaneity", points: 4 },
+                    { text: "🎲 YOLO, figure it out later", points: 1 }
+                ]
+            },
+            {
+                text: "In a relationship, loyalty means:",
+                options: [
+                    { text: "💯 Everything - it's non-negotiable", points: 5 },
+                    { text: "🤝 Trust & honest communication", points: 4 },
+                    { text: "👥 Being there when it matters", points: 3 },
+                    { text: "🤷 Depends on the situation", points: 1 }
+                ]
+            },
+            {
+                text: "Red flag that's a dealbreaker for you:",
+                options: [
+                    { text: "🤥 Any form of lying or dishonesty", points: 5 },
+                    { text: "😒 Disrespect or rudeness", points: 4 },
+                    { text: "📱 Too much time on social media", points: 2 },
+                    { text: "🎭 Being fake or not genuine", points: 4 }
+                ]
+            }
+        ];
+
+        // Initialize - Random pickup line
+        window.onload = function() {
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+        };
+
+        function showChallenge() {
+            document.getElementById('pickupScreen').classList.add('hidden');
+            document.getElementById('challengeScreen').classList.add('active');
+        }
+
+        function startTest() {
+            herName = document.getElementById('herNameInput').value.trim();
+
+            if (herName.length < 2) {
+                alert('Come on, gimme your real name! 😊');
+                return;
+            }
+
+            document.getElementById('challengeScreen').classList.remove('active');
+            document.getElementById('quizScreen').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+
+            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('questionText').textContent = question.text;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.text;
+                btn.onclick = () => selectAnswer(option.points);
+                optionsContainer.appendChild(btn);
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function selectAnswer(points) {
+            answers.push(points);
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            // Calculate scores
+            const totalPoints = answers.reduce((a, b) => a + b, 0);
+            const maxPoints = questions.length * 5;
+            const compatibilityScore = Math.round((totalPoints / maxPoints) * 100);
+
+            // Individual category scores (randomize slightly for realism)
+            const vibeScore = Math.min(100, compatibilityScore + Math.floor(Math.random() * 10 - 5));
+            const commScore = Math.min(100, compatibilityScore + Math.floor(Math.random() * 10 - 5));
+            const goalsScore = Math.min(100, compatibilityScore + Math.floor(Math.random() * 10 - 5));
+            const chemScore = Math.min(100, compatibilityScore + Math.floor(Math.random() * 15));
+
+            document.getElementById('quizScreen').classList.remove('active');
+            document.getElementById('resultsScreen').classList.add('active');
+
+            // Animate score counting up
+            animateScore(compatibilityScore);
+
+            // Set breakdown scores
+            setTimeout(() => {
+                document.getElementById('vibeScore').textContent = vibeScore + '%';
+                document.getElementById('commScore').textContent = commScore + '%';
+                document.getElementById('goalsScore').textContent = goalsScore + '%';
+                document.getElementById('chemScore').textContent = chemScore + '%';
+            }, 1000);
+
+            // Set verdict based on score
+            let verdict, emoji, verdictText;
+
+            if (compatibilityScore >= 85) {
+                emoji = '💍';
+                verdict = `${herName}, You're Wifey Material! 💯`;
+                verdictText = `Yo this is crazy... ${compatibilityScore}% compatibility is almost unheard of. Y'all got that rare connection. This could be something special fr fr.`;
+            } else if (compatibilityScore >= 70) {
+                emoji = '💑';
+                verdict = 'Strong Potential 🔥';
+                verdictText = `${compatibilityScore}% is actually really solid. There's definitely something here worth exploring. The vibes are vibing for sure.`;
+            } else if (compatibilityScore >= 55) {
+                emoji = '😊';
+                verdict = 'Could Work 👀';
+                verdictText = `${compatibilityScore}% means there's potential but you'd have to put in work. Sometimes the best relationships aren't the easiest ones though.`;
+            } else {
+                emoji = '🤷';
+                verdict = 'Just Vibing 🌊';
+                verdictText = `${compatibilityScore}% suggests different wavelengths, but who knows? Sometimes opposites attract. Worth getting to know each other regardless.`;
+            }
+
+            document.getElementById('resultEmoji').textContent = emoji;
+            document.getElementById('verdictTitle').textContent = verdict;
+            document.getElementById('verdictText').textContent = verdictText;
+
+            // Create heart animations
+            createHearts();
+        }
+
+        function animateScore(targetScore) {
+            let currentScore = 0;
+            const scoreElement = document.getElementById('compatibilityScore');
+            const duration = 2000; // 2 seconds
+            const increment = targetScore / (duration / 16); // 60fps
+
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= targetScore) {
+                    currentScore = targetScore;
+                    clearInterval(timer);
+                }
+                scoreElement.textContent = Math.round(currentScore) + '%';
+            }, 16);
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart-animation';
+                    heart.textContent = '❤️';
+                    heart.style.left = Math.random() * window.innerWidth + 'px';
+                    heart.style.top = Math.random() * window.innerHeight + 'px';
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 200);
+            }
+        }
+
+        function saveContact() {
+            const social = document.getElementById('socialInput').value.trim();
+
+            if (social.length < 3) {
+                alert('Need your real @ so I can send the full breakdown! 😉');
+                return;
+            }
+
+            // Save to localStorage
+            const contacts = JSON.parse(localStorage.getItem('wifeyMaterialContacts') || '[]');
+            const compatScore = document.getElementById('compatibilityScore').textContent;
+
+            contacts.push({
+                name: herName,
+                instagram: social,
+                score: compatScore,
+                answers: answers,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem('wifeyMaterialContacts', JSON.stringify(contacts));
+
+            // Show notification
+            const notice = document.getElementById('savedNotice');
+            notice.classList.add('show');
+            setTimeout(() => notice.classList.remove('show'), 3000);
+
+            // Update input
+            document.getElementById('socialInput').value = '';
+            document.getElementById('socialInput').placeholder = `✅ Got it ${herName}! Watch your DMs`;
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            answers = [];
+            herName = '';
+
+            document.getElementById('resultsScreen').classList.remove('active');
+            document.getElementById('pickupScreen').classList.remove('hidden');
+
+            // New random pickup line
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+
+            document.getElementById('herNameInput').value = '';
+            document.getElementById('socialInput').placeholder = 'Drop your IG @';
+        }
+
+        // Console helper to view saved contacts
+        console.log('💾 To view all contacts: JSON.parse(localStorage.getItem("wifeyMaterialContacts"))');
+    </script>
+</body>
+</html>
