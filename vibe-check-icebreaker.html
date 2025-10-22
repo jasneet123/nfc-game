@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Check ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #fff, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .question-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd93d, #ff6b6b);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(255, 217, 61, 0.5);
+        }
+
+        .question-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 1.1em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffd93d;
+            transform: scale(1.03);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 18px 50px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(238, 90, 111, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(238, 90, 111, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-container {
+            display: none;
+        }
+
+        .result-container.active {
+            display: block;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .result-emoji {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: rotate 0.5s ease;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(-20deg) scale(0); }
+            to { transform: rotate(0) scale(1); }
+        }
+
+        .result-title {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #ffd93d;
+            text-shadow: 0 2px 20px rgba(255, 217, 61, 0.5);
+        }
+
+        .result-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.95;
+        }
+
+        .compatibility {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+        }
+
+        .compatibility-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .vibe-match {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd93d;
+            margin: 15px 0;
+            text-shadow: 0 4px 20px rgba(255, 217, 61, 0.6);
+        }
+
+        .share-prompt {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .share-prompt p {
+            font-size: 1em;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+
+        .social-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.1em;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .social-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            margin: 10px 5px;
+            padding: 15px 30px;
+            font-size: 1em;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .intro-container {
+            display: block;
+        }
+
+        .intro-container.hidden {
+            display: none;
+        }
+
+        .features {
+            text-align: left;
+            margin: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+            font-size: 1.1em;
+        }
+
+        .feature-item::before {
+            content: '✨';
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .name-input-container {
+            margin: 25px 0;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .name-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .saved-notice {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .saved-notice.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Intro Screen -->
+            <div class="intro-container" id="introContainer">
+                <div class="logo">✨</div>
+                <h1>Vibe Check</h1>
+                <p class="subtitle">Discover your personality type in 60 seconds</p>
+
+                <div class="features">
+                    <div class="feature-item">Quick 5-question quiz</div>
+                    <div class="feature-item">Get your vibe personality</div>
+                    <div class="feature-item">See who you match with</div>
+                    <div class="feature-item">Share with friends</div>
+                </div>
+
+                <div class="name-input-container">
+                    <input type="text" class="name-input" id="nameInput" placeholder="What's your name?" maxlength="20">
+                </div>
+
+                <button class="btn" onclick="startQuiz()">Start Vibe Check</button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div class="question-container" id="quizContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="result-container" id="resultContainer">
+                <div class="result-emoji" id="resultEmoji"></div>
+                <div class="result-title" id="resultTitle"></div>
+                <div class="result-description" id="resultDescription"></div>
+
+                <div class="compatibility">
+                    <div class="compatibility-title">Your Vibe Matches:</div>
+                    <div id="compatibleTypes"></div>
+                </div>
+
+                <div class="share-prompt">
+                    <p>💬 Want your full personality breakdown?</p>
+                    <input type="text" class="social-input" id="socialInput" placeholder="Drop your IG @ for the full report 👀">
+                    <button class="btn" onclick="saveContact()">Send Me The Breakdown</button>
+                </div>
+
+                <button class="btn-secondary btn" onclick="restartQuiz()">Take Again</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="saved-notice" id="savedNotice">
+        ✅ Saved! I'll DM you
+    </div>
+
+    <script>
+        // Game State
+        let currentQuestion = 0;
+        let answers = [];
+        let userName = '';
+
+        // Questions
+        const questions = [
+            {
+                text: "It's Friday night. You're feeling:",
+                options: [
+                    { text: "Ready to rage 🎉", type: "party" },
+                    { text: "Chill vibes only 😎", type: "chill" },
+                    { text: "Adventure mode 🌟", type: "adventure" },
+                    { text: "Cozy night in 🏡", type: "homebody" }
+                ]
+            },
+            {
+                text: "Your ideal date activity:",
+                options: [
+                    { text: "Concert or club 🎵", type: "party" },
+                    { text: "Coffee & deep talks ☕", type: "chill" },
+                    { text: "Spontaneous road trip 🚗", type: "adventure" },
+                    { text: "Movie marathon 🎬", type: "homebody" }
+                ]
+            },
+            {
+                text: "Your friend group knows you as:",
+                options: [
+                    { text: "The life of the party 🥳", type: "party" },
+                    { text: "The therapist friend 💭", type: "chill" },
+                    { text: "The wild card 🎲", type: "adventure" },
+                    { text: "The reliable one 🤝", type: "homebody" }
+                ]
+            },
+            {
+                text: "When making plans, you:",
+                options: [
+                    { text: "Always down for anything 🙌", type: "party" },
+                    { text: "Keep it low-key 🌙", type: "chill" },
+                    { text: "Do something different 🎨", type: "adventure" },
+                    { text: "Plan ahead carefully 📝", type: "homebody" }
+                ]
+            },
+            {
+                text: "Your ideal Sunday looks like:",
+                options: [
+                    { text: "Brunch then day party 🥂", type: "party" },
+                    { text: "Farmers market & chill ☀️", type: "chill" },
+                    { text: "Exploring somewhere new 🗺️", type: "adventure" },
+                    { text: "Self-care Sunday 🛁", type: "homebody" }
+                ]
+            }
+        ];
+
+        // Personality Types
+        const personalities = {
+            party: {
+                emoji: "🎉",
+                title: "The Party Starter",
+                description: "You bring the energy wherever you go. Life's a celebration and you're the DJ. Your vibe is contagious and people gravitate to your magnetic personality.",
+                compatible: ["Adventure Seeker", "The Chill One"],
+                traits: ["Outgoing", "Spontaneous", "Social Butterfly", "Fun-Loving"]
+            },
+            chill: {
+                emoji: "😎",
+                title: "The Chill One",
+                description: "Cool, calm, and collected. You're the friend everyone calls when they need real talk. Your laid-back energy is exactly what people need.",
+                compatible: ["Party Starter", "Homebody"],
+                traits: ["Easy-going", "Good Listener", "Balanced", "Authentic"]
+            },
+            adventure: {
+                emoji: "🌟",
+                title: "Adventure Seeker",
+                description: "Always chasing the next thrill. You live for new experiences and spontaneous moments. Your fearless energy inspires everyone around you.",
+                compatible: ["Party Starter", "The Chill One"],
+                traits: ["Bold", "Curious", "Fearless", "Spontaneous"]
+            },
+            homebody: {
+                emoji: "🏡",
+                title: "The Homebody",
+                description: "You know the value of a perfect night in. Quality over quantity is your motto. You create the warmest, most inviting spaces and energy.",
+                compatible: ["The Chill One", "Adventure Seeker"],
+                traits: ["Thoughtful", "Loyal", "Caring", "Intentional"]
+            }
+        };
+
+        function startQuiz() {
+            userName = document.getElementById('nameInput').value.trim() || 'friend';
+
+            if (userName.length < 2) {
+                alert('Come on, gimme your real name! 😊');
+                return;
+            }
+
+            document.getElementById('introContainer').classList.add('hidden');
+            document.getElementById('quizContainer').classList.add('active');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            document.getElementById('questionText').textContent = question.text;
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.text;
+                btn.onclick = () => selectAnswer(option.type);
+                optionsContainer.appendChild(btn);
+            });
+
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function selectAnswer(type) {
+            answers.push(type);
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            // Calculate personality type
+            const counts = {};
+            answers.forEach(answer => {
+                counts[answer] = (counts[answer] || 0) + 1;
+            });
+
+            const dominantType = Object.keys(counts).reduce((a, b) =>
+                counts[a] > counts[b] ? a : b
+            );
+
+            const personality = personalities[dominantType];
+
+            document.getElementById('quizContainer').classList.remove('active');
+            document.getElementById('resultContainer').classList.add('active');
+
+            document.getElementById('resultEmoji').textContent = personality.emoji;
+            document.getElementById('resultTitle').textContent = `${userName}, you're ${personality.title}!`;
+            document.getElementById('resultDescription').textContent = personality.description;
+
+            const compatibleHTML = personality.compatible.map(type =>
+                `<div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; margin: 5px; font-size: 0.9em;">${type}</div>`
+            ).join('');
+            document.getElementById('compatibleTypes').innerHTML = compatibleHTML;
+        }
+
+        function saveContact() {
+            const social = document.getElementById('socialInput').value.trim();
+
+            if (social.length < 3) {
+                alert('Need your real @ so I can send you the breakdown! 😉');
+                return;
+            }
+
+            // Save to localStorage (in a real app, this would go to a database)
+            const contacts = JSON.parse(localStorage.getItem('vibeCheckContacts') || '[]');
+            contacts.push({
+                name: userName,
+                social: social,
+                personality: document.getElementById('resultTitle').textContent,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('vibeCheckContacts', JSON.stringify(contacts));
+
+            // Show saved notification
+            const notice = document.getElementById('savedNotice');
+            notice.classList.add('show');
+            setTimeout(() => notice.classList.remove('show'), 3000);
+
+            // Clear input
+            document.getElementById('socialInput').value = '';
+            document.getElementById('socialInput').placeholder = '✅ Got it! Check your DMs soon';
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = [];
+            document.getElementById('resultContainer').classList.remove('active');
+            document.getElementById('introContainer').classList.remove('hidden');
+            document.getElementById('nameInput').value = '';
+            document.getElementById('socialInput').placeholder = 'Drop your IG @ for the full report 👀';
+        }
+
+        // View saved contacts (for you to check later)
+        console.log('💾 To see saved contacts, run: JSON.parse(localStorage.getItem("vibeCheckContacts"))');
+    </script>
+</body>
+</html>
