@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connection Check ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        /* Screen Management - Simplified */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block !important;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Pickup Line Screen */
+        .pickup-emoji {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .pickup-line {
+            font-size: 1.7em;
+            font-weight: bold;
+            line-height: 1.6;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .pickup-subtext {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin: 25px 0;
+            line-height: 1.6;
+        }
+
+        /* Common Elements */
+        .screen-title {
+            font-size: 2.3em;
+            font-weight: bold;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #fff, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .screen-subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .name-input, .quality-input, .social-input {
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: 600;
+            margin: 25px 0;
+        }
+
+        .name-input::placeholder, .quality-input::placeholder, .social-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .name-input:focus, .quality-input:focus, .social-input:focus {
+            outline: none;
+            border-color: #ffd93d;
+            box-shadow: 0 0 20px rgba(255, 217, 61, 0.4);
+        }
+
+        /* Progress */
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd93d, #ff6b9d);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            font-weight: 600;
+        }
+
+        /* Questions */
+        .question-emoji {
+            font-size: 4em;
+            margin: 20px 0;
+        }
+
+        .question-text {
+            font-size: 1.6em;
+            font-weight: bold;
+            margin: 25px 0 40px 0;
+            line-height: 1.5;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            font-size: 1.1em;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: #ffd93d;
+            transform: translateX(8px);
+        }
+
+        /* Results */
+        .connection-score {
+            font-size: 6em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 30px 0;
+        }
+
+        .verdict {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+
+        .verdict-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .verdict-text {
+            font-size: 1.15em;
+            line-height: 1.8;
+        }
+
+        .guy-profile {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .profile-item {
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+        }
+
+        .profile-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .profile-value {
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .quality-input {
+            font-size: 1em;
+            text-align: left;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .quality-label {
+            font-size: 0.95em;
+            margin: 15px 0 5px 5px;
+            opacity: 0.9;
+            font-weight: 600;
+            text-align: left;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 20px 50px;
+            font-size: 1.25em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 35px rgba(238, 90, 111, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 45px rgba(238, 90, 111, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            margin-top: 15px;
+            font-size: 1em;
+            padding: 15px 40px;
+        }
+
+        .saved-notice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            background: #4CAF50;
+            padding: 18px 35px;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.5s ease;
+            z-index: 2000;
+            font-weight: bold;
+        }
+
+        .saved-notice.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Screen 1: Pickup Line -->
+            <div class="screen active" id="screen1">
+                <div class="pickup-emoji">✨</div>
+                <div class="pickup-line" id="pickupLineText"></div>
+                <div class="pickup-subtext">
+                    But real talk... looks aren't everything.
+                    <br><br>
+                    Let's see if we actually have chemistry beyond the surface.
+                    <br>
+                    Quick quiz - takes 2 minutes 😊
+                </div>
+                <button class="btn" onclick="goToScreen(2)">Let's Find Out 👀</button>
+            </div>
+
+            <!-- Screen 2: Name Input -->
+            <div class="screen" id="screen2">
+                <div style="font-size: 3.5em; margin-bottom: 15px;">💫</div>
+                <h1 class="screen-title">Let's Start Simple</h1>
+                <p class="screen-subtitle">
+                    I want to know the real you, not just surface stuff.
+                    <br><br>
+                    This isn't about games - it's about seeing if we actually connect.
+                </p>
+                <input type="text" class="name-input" id="herNameInput" placeholder="What's your name?" maxlength="20">
+                <button class="btn" onclick="startQuiz()">Let's See ✨</button>
+            </div>
+
+            <!-- Screen 3: Quiz -->
+            <div class="screen" id="screen3">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <div class="progress-text" id="progressText"></div>
+
+                <div class="question-emoji" id="questionEmoji"></div>
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="optionsContainer"></div>
+            </div>
+
+            <!-- Screen 4: Guy's Turn -->
+            <div class="screen" id="screen4">
+                <div style="font-size: 3em; margin-bottom: 15px;">🌟</div>
+                <h2 class="screen-title">Fair is Fair</h2>
+                <p class="screen-subtitle">
+                    You shared yourself with me. Let me share a bit about who I am too.
+                </p>
+
+                <div class="guy-qualities">
+                    <div class="quality-label">What makes you different? ✨</div>
+                    <input type="text" class="quality-input" id="quality1" placeholder="e.g., I actually listen and remember little details">
+
+                    <div class="quality-label">What are you passionate about? 🔥</div>
+                    <input type="text" class="quality-input" id="quality2" placeholder="e.g., Building my own business / Making music">
+
+                    <div class="quality-label">What can you offer in a relationship? 💫</div>
+                    <input type="text" class="quality-input" id="quality3" placeholder="e.g., Loyalty, adventure, someone who actually texts back">
+                </div>
+
+                <button class="btn" onclick="goToScreen(5)">See If We Connect 💭</button>
+            </div>
+
+            <!-- Screen 5: Results -->
+            <div class="screen" id="screen5">
+                <div style="font-size: 3.5em; margin-bottom: 10px;">💫</div>
+                <div style="font-size: 1.2em; opacity: 0.9; margin-bottom: 10px;">Connection Potential</div>
+                <div class="connection-score" id="connectionScore">0%</div>
+
+                <div class="verdict">
+                    <div class="verdict-title" id="verdictTitle"></div>
+                    <div class="verdict-text" id="verdictText"></div>
+                </div>
+
+                <div class="guy-profile">
+                    <div class="profile-title" style="font-size: 1.5em; font-weight: bold; margin-bottom: 20px;">A Bit About Me</div>
+                    <div id="profileContent"></div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 25px; padding: 30px; margin: 30px 0;">
+                    <div style="font-size: 2em; margin-bottom: 15px;">💭</div>
+                    <p style="font-size: 1.15em; line-height: 1.7; margin: 20px 0;">
+                        Look, I don't usually do this... but this actually felt different.
+                        <br><br>
+                        If you felt it too, I'd really like to take you out sometime. No expectations, just seeing where this goes.
+                    </p>
+                    <input type="text" class="social-input" id="socialInput" placeholder="Your Instagram or number?">
+                    <button class="btn" onclick="saveConnection()">Yeah, Let's See Where This Goes</button>
+                </div>
+
+                <button class="btn-secondary btn" onclick="restart()">Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="saved-notice" id="savedNotice">✨ Got it. I'll reach out soon</div>
+
+    <script>
+        // Pickup Lines
+        const pickupLines = [
+            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears",
+            "Do you believe in love at first sight?\n\nOr should I walk by again?",
+            "Is your name Google?\n\nBecause you have everything I've been searching for",
+            "Are you a parking ticket?\n\nBecause you've got FINE written all over you",
+            "If you were a vegetable...\n\nYou'd be a cute-cumber",
+            "Excuse me, I think you dropped something\n\nMY JAW"
+        ];
+
+        // Game State
+        let currentQuestion = 0;
+        let answers = [];
+        let herName = '';
+        let guyQualities = {};
+
+        // Questions
+        const questions = [
+            {
+                emoji: "🌅",
+                text: "What does a perfect day look like for you?",
+                options: [
+                    { text: "Adventure - new experiences, exploring", connection: 4 },
+                    { text: "Balance - productive but also chill", connection: 5 },
+                    { text: "Social - quality time with people I love", connection: 4 },
+                    { text: "Peace - doing what makes me happy", connection: 3 }
+                ]
+            },
+            {
+                emoji: "💭",
+                text: "When you're stressed, you need someone who:",
+                options: [
+                    { text: "Gives you space but checks in", connection: 5 },
+                    { text: "Distracts you with fun stuff", connection: 3 },
+                    { text: "Lets you vent and really listens", connection: 5 },
+                    { text: "Solves problems with you", connection: 4 }
+                ]
+            },
+            {
+                emoji: "❤️",
+                text: "How do you show someone you care?",
+                options: [
+                    { text: "Quality time - being present", connection: 5 },
+                    { text: "Words - saying how I feel", connection: 4 },
+                    { text: "Actions - doing things for them", connection: 4 },
+                    { text: "Physical affection - touch", connection: 3 }
+                ]
+            },
+            {
+                emoji: "🎯",
+                text: "What matters most to you in life?",
+                options: [
+                    { text: "Growth - becoming my best self", connection: 5 },
+                    { text: "Connection - deep relationships", connection: 5 },
+                    { text: "Freedom - living on my terms", connection: 4 },
+                    { text: "Impact - making a difference", connection: 4 }
+                ]
+            },
+            {
+                emoji: "🌟",
+                text: "In a relationship, you value:",
+                options: [
+                    { text: "Trust and honesty above all", connection: 5 },
+                    { text: "Being able to be yourself", connection: 5 },
+                    { text: "Feeling supported and believed in", connection: 4 },
+                    { text: "Laughter and not taking life too seriously", connection: 4 }
+                ]
+            },
+            {
+                emoji: "💫",
+                text: "The thing that would make you lose interest:",
+                options: [
+                    { text: "Dishonesty or playing games", connection: 5 },
+                    { text: "Not making effort or caring", connection: 5 },
+                    { text: "Being close-minded or judgmental", connection: 4 },
+                    { text: "Not being genuine or real", connection: 5 }
+                ]
+            }
+        ];
+
+        // Initialize
+        window.onload = function() {
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+        };
+
+        // Screen Navigation
+        function goToScreen(screenNum) {
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show target screen
+            document.getElementById('screen' + screenNum).classList.add('active');
+        }
+
+        function startQuiz() {
+            herName = document.getElementById('herNameInput').value.trim();
+
+            if (herName.length < 2) {
+                alert('Hey, I really want to know your name 😊');
+                return;
+            }
+
+            goToScreen(3);
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+
+            document.getElementById('questionEmoji').textContent = question.emoji;
+            document.getElementById('questionText').textContent = question.text;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1} of ${questions.length}`;
+
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+
+            question.options.forEach((option) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option.text;
+                btn.onclick = () => selectAnswer(option);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(option) {
+            answers.push(option);
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                goToScreen(4);
+            }
+        }
+
+        function showResults() {
+            guyQualities = {
+                quality1: document.getElementById('quality1').value.trim() || "Someone who actually cares",
+                quality2: document.getElementById('quality2').value.trim() || "Chasing my goals",
+                quality3: document.getElementById('quality3').value.trim() || "Real connection, not games"
+            };
+
+            const totalConnection = answers.reduce((sum, answer) => sum + answer.connection, 0);
+            const maxConnection = questions.length * 5;
+            const connectionScore = Math.round((totalConnection / maxConnection) * 100);
+
+            // Animate score
+            let currentScore = 0;
+            const scoreElement = document.getElementById('connectionScore');
+            const duration = 2000;
+            const increment = connectionScore / (duration / 16);
+
+            const timer = setInterval(() => {
+                currentScore += increment;
+                if (currentScore >= connectionScore) {
+                    currentScore = connectionScore;
+                    clearInterval(timer);
+                }
+                scoreElement.textContent = Math.round(currentScore) + '%';
+            }, 16);
+
+            // Set verdict
+            let title, text;
+
+            if (connectionScore >= 85) {
+                title = `${herName}, This Feels Real`;
+                text = `${connectionScore}% connection is rare. Like, really rare. The way you answered these questions... I felt that. We're on the same wavelength and that doesn't happen often.`;
+            } else if (connectionScore >= 70) {
+                title = 'There\'s Definitely Something Here';
+                text = `${connectionScore}% means we vibe on a deeper level than most people do. Not gonna lie, I'm actually excited to see where this could go.`;
+            } else if (connectionScore >= 55) {
+                title = 'Interesting Connection';
+                text = `${connectionScore}% shows potential. We might be different in some ways, but sometimes that's exactly what makes it work. Worth exploring for sure.`;
+            } else {
+                title = 'Different Vibes, But...';
+                text = `${connectionScore}% suggests we see things differently, but honestly? Some of the best connections come from unexpected places. I'd still like to get to know you.`;
+            }
+
+            document.getElementById('verdictTitle').textContent = title;
+            document.getElementById('verdictText').textContent = text;
+
+            // Show guy's profile
+            document.getElementById('profileContent').innerHTML = `
+                <div class="profile-item">
+                    <div class="profile-label">What makes me different:</div>
+                    <div class="profile-value">${guyQualities.quality1}</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">What I'm passionate about:</div>
+                    <div class="profile-value">${guyQualities.quality2}</div>
+                </div>
+                <div class="profile-item">
+                    <div class="profile-label">What I bring:</div>
+                    <div class="profile-value">${guyQualities.quality3}</div>
+                </div>
+            `;
+        }
+
+        function saveConnection() {
+            const social = document.getElementById('socialInput').value.trim();
+
+            if (social.length < 3) {
+                alert('Hey, I need a way to reach you 😊');
+                return;
+            }
+
+            const connections = JSON.parse(localStorage.getItem('connectionCheckData') || '[]');
+            const connectionScore = document.getElementById('connectionScore').textContent;
+
+            connections.push({
+                name: herName,
+                contact: social,
+                score: connectionScore,
+                answers: answers.map(a => a.text),
+                guyQualities: guyQualities,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem('connectionCheckData', JSON.stringify(connections));
+
+            const notice = document.getElementById('savedNotice');
+            notice.classList.add('show');
+            setTimeout(() => notice.classList.remove('show'), 3000);
+
+            document.getElementById('socialInput').value = '';
+            document.getElementById('socialInput').placeholder = `Got it, ${herName}. Talk soon ✨`;
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            answers = [];
+            herName = '';
+            guyQualities = {};
+
+            const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
+            document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
+
+            document.getElementById('herNameInput').value = '';
+            document.getElementById('socialInput').placeholder = 'Your Instagram or number?';
+            ['quality1', 'quality2', 'quality3'].forEach(id => document.getElementById(id).value = '');
+
+            goToScreen(1);
+        }
+
+        // Modified goToScreen function for screen 5 (results)
+        const originalGoToScreen = goToScreen;
+        goToScreen = function(screenNum) {
+            if (screenNum === 5) {
+                showResults();
+            }
+            originalGoToScreen(screenNum);
+        };
+
+        console.log('💾 View saved connections: JSON.parse(localStorage.getItem("connectionCheckData"))');
+    </script>
+</body>
+</html>
