@@ -717,14 +717,18 @@
             <div class="pickup-screen" id="pickupScreen">
                 <div class="pickup-emoji">✨</div>
                 <div class="pickup-line" id="pickupLineText">
-                    Hey, I know this might sound random...
+                    Are you a magician?
                     <br><br>
-                    But I think we might actually vibe
+                    Because whenever I look at you, everyone else disappears
                 </div>
                 <div class="pickup-subtext">
-                    Want to find out if there's something real here? Takes 2 minutes, no pressure 😊
+                    But real talk... looks aren't everything.
+                    <br><br>
+                    Let's see if we actually have chemistry beyond the surface.
+                    <br>
+                    Quick quiz - takes 2 minutes 😊
                 </div>
-                <button class="btn" onclick="showNameScreen()">I'm Curious 👀</button>
+                <button class="btn" onclick="showNameScreen()">Let's Find Out 👀</button>
             </div>
 
             <!-- Name Input Screen -->
@@ -847,11 +851,12 @@
 
         // Pickup Lines
         const pickupLines = [
-            "Hey, I know this might sound random...\n\nBut I think we might actually vibe",
-            "Okay so...\n\nI don't usually do this, but you caught my attention",
-            "Real talk for a second...\n\nI think there might be something here worth exploring",
-            "Can I be honest?\n\nYou seem like someone I'd actually want to get to know",
-            "So here's the thing...\n\nI felt like I had to at least try to talk to you"
+            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears",
+            "Do you believe in love at first sight?\n\nOr should I walk by again?",
+            "Is your name Google?\n\nBecause you have everything I've been searching for",
+            "Are you a parking ticket?\n\nBecause you've got FINE written all over you",
+            "If you were a vegetable...\n\nYou'd be a cute-cumber",
+            "Excuse me, I think you dropped something\n\nMY JAW"
         ];
 
         // Game State
@@ -931,8 +936,16 @@
         };
 
         function showNameScreen() {
-            document.getElementById('pickupScreen').classList.add('hidden');
-            document.getElementById('nameScreen').classList.add('active');
+            const pickupScreen = document.getElementById('pickupScreen');
+            const nameScreen = document.getElementById('nameScreen');
+
+            // Hide pickup screen
+            pickupScreen.style.display = 'none';
+            pickupScreen.classList.add('hidden');
+
+            // Show name screen
+            nameScreen.style.display = 'block';
+            nameScreen.classList.add('active');
         }
 
         function startQuestions() {
@@ -943,8 +956,17 @@
                 return;
             }
 
-            document.getElementById('nameScreen').classList.remove('active');
-            document.getElementById('quizScreen').classList.add('active');
+            const nameScreen = document.getElementById('nameScreen');
+            const quizScreen = document.getElementById('quizScreen');
+
+            // Hide name screen
+            nameScreen.style.display = 'none';
+            nameScreen.classList.remove('active');
+
+            // Show quiz screen
+            quizScreen.style.display = 'block';
+            quizScreen.classList.add('active');
+
             showQuestion();
         }
 
@@ -1009,8 +1031,16 @@
         }
 
         function showConnectionScreen() {
-            document.getElementById('quizScreen').classList.remove('active');
-            document.getElementById('connectionScreen').classList.add('active');
+            const quizScreen = document.getElementById('quizScreen');
+            const connectionScreen = document.getElementById('connectionScreen');
+
+            // Hide quiz screen
+            quizScreen.style.display = 'none';
+            quizScreen.classList.remove('active');
+
+            // Show connection screen
+            connectionScreen.style.display = 'block';
+            connectionScreen.classList.add('active');
         }
 
         function showResults() {
@@ -1026,8 +1056,16 @@
             const maxConnection = questions.length * 5;
             const connectionScore = Math.round((totalConnection / maxConnection) * 100);
 
-            document.getElementById('connectionScreen').classList.remove('active');
-            document.getElementById('resultsScreen').classList.add('active');
+            const connectionScreen = document.getElementById('connectionScreen');
+            const resultsScreen = document.getElementById('resultsScreen');
+
+            // Hide connection screen
+            connectionScreen.style.display = 'none';
+            connectionScreen.classList.remove('active');
+
+            // Show results screen
+            resultsScreen.style.display = 'block';
+            resultsScreen.classList.add('active');
 
             // Animate score
             animateScore(connectionScore);
@@ -1174,8 +1212,17 @@
             herName = '';
             guyQualities = {};
 
+            // Hide all screens
+            document.getElementById('resultsScreen').style.display = 'none';
             document.getElementById('resultsScreen').classList.remove('active');
-            document.getElementById('pickupScreen').classList.remove('hidden');
+            document.getElementById('nameScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'none';
+            document.getElementById('connectionScreen').style.display = 'none';
+
+            // Show pickup screen
+            const pickupScreen = document.getElementById('pickupScreen');
+            pickupScreen.style.display = 'block';
+            pickupScreen.classList.remove('hidden');
 
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
             document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
