@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection Check ✨</title>
+    <title>Connection Game ✨</title>
     <style>
         * {
             margin: 0;
@@ -21,11 +21,13 @@
             justify-content: center;
             padding: 20px;
             color: white;
+            overflow-x: hidden;
         }
 
         .container {
             max-width: 500px;
             width: 100%;
+            position: relative;
         }
 
         .card {
@@ -36,6 +38,8 @@
             box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
             border: 2px solid rgba(255, 255, 255, 0.3);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .screen {
@@ -44,17 +48,33 @@
 
         .screen.active {
             display: block;
-            animation: fadeIn 0.5s ease;
+            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
         }
 
         /* Pickup Screen */
@@ -62,52 +82,60 @@
             font-size: 5em;
             margin-bottom: 20px;
             animation: pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 217, 61, 0.5));
         }
 
         .pickup-line {
-            font-size: 1.7em;
-            font-weight: bold;
-            line-height: 1.6;
+            font-size: 1.8em;
+            font-weight: 800;
+            line-height: 1.5;
             margin: 30px 0;
-            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            background: linear-gradient(135deg, #ffd93d 0%, #ff6b9d 50%, #ffd93d 100%);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: shimmer 3s linear infinite;
         }
 
         .pickup-subtext {
-            font-size: 1.1em;
+            font-size: 1.15em;
             opacity: 0.95;
             margin: 25px 0;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-weight: 500;
         }
 
         /* Common Elements */
         .screen-title {
-            font-size: 2.3em;
-            font-weight: bold;
+            font-size: 2.5em;
+            font-weight: 800;
             margin: 20px 0;
             background: linear-gradient(135deg, #fff, #ffd93d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 217, 61, 0.3);
         }
 
         .screen-subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
+            font-size: 1.15em;
+            opacity: 0.95;
             margin: 20px 0;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-weight: 500;
         }
 
         .emoji-big {
-            font-size: 3.5em;
+            font-size: 4em;
             margin-bottom: 15px;
+            animation: float 3s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
         }
 
         input {
             width: 100%;
-            padding: 20px;
+            padding: 22px;
             border-radius: 20px;
             border: 3px solid rgba(255, 255, 255, 0.4);
             background: rgba(255, 255, 255, 0.25);
@@ -116,6 +144,7 @@
             text-align: center;
             font-weight: 600;
             margin: 25px 0;
+            transition: all 0.3s ease;
         }
 
         input::placeholder {
@@ -125,43 +154,50 @@
         input:focus {
             outline: none;
             border-color: #ffd93d;
-            box-shadow: 0 0 20px rgba(255, 217, 61, 0.4);
+            box-shadow: 0 0 25px rgba(255, 217, 61, 0.5);
+            transform: scale(1.02);
         }
 
         /* Progress Bar */
         .progress-bar {
             width: 100%;
-            height: 12px;
+            height: 14px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ffd93d, #ff6b9d);
+            background: linear-gradient(90deg, #ffd93d, #ff6b9d, #ffd93d);
+            background-size: 200% auto;
             border-radius: 10px;
-            transition: width 0.5s ease;
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             width: 0%;
+            animation: shimmer 2s linear infinite;
         }
 
         .progress-text {
             margin-top: 10px;
-            font-size: 0.9em;
-            opacity: 0.8;
-            font-weight: 600;
+            font-size: 1em;
+            opacity: 0.9;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         /* Questions */
         .question-emoji {
-            font-size: 4em;
+            font-size: 5em;
             margin: 20px 0;
+            animation: pulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 217, 61, 0.4));
         }
 
         .question-text {
-            font-size: 1.6em;
-            font-weight: bold;
+            font-size: 1.7em;
+            font-weight: 700;
             margin: 25px 0 40px 0;
             line-height: 1.5;
         }
@@ -173,105 +209,102 @@
 
         .option-btn {
             background: rgba(255, 255, 255, 0.2);
-            border: 3px solid rgba(255, 255, 255, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.35);
             border-radius: 20px;
-            padding: 20px;
-            font-size: 1.1em;
+            padding: 22px;
+            font-size: 1.15em;
             color: white;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             font-weight: 600;
             text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-btn:hover::before {
+            left: 100%;
         }
 
         .option-btn:active {
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 217, 61, 0.3);
             border-color: #ffd93d;
-            transform: scale(0.98);
-        }
-
-        /* Guy Qualities */
-        .quality-input {
-            font-size: 1em;
-            text-align: left;
-            padding: 15px;
-            margin: 10px 0;
-        }
-
-        .quality-label {
-            font-size: 0.95em;
-            margin: 15px 0 5px 5px;
-            opacity: 0.9;
-            font-weight: 600;
-            text-align: left;
+            transform: scale(0.97);
+            box-shadow: 0 0 30px rgba(255, 217, 61, 0.5);
         }
 
         /* Results */
         .connection-score {
-            font-size: 6em;
-            font-weight: bold;
+            font-size: 7em;
+            font-weight: 900;
             background: linear-gradient(135deg, #ffd93d, #ff6b9d);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin: 30px 0;
+            filter: drop-shadow(0 0 30px rgba(255, 217, 61, 0.5));
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .verdict {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 25px;
-            padding: 30px;
+            padding: 35px;
             margin: 30px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .verdict-title {
-            font-size: 2em;
-            font-weight: bold;
+            font-size: 2.2em;
+            font-weight: 800;
             margin-bottom: 20px;
+            line-height: 1.3;
         }
 
         .verdict-text {
-            font-size: 1.15em;
+            font-size: 1.2em;
             line-height: 1.8;
+            font-weight: 500;
         }
 
-        .guy-profile {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 25px;
-            padding: 30px;
-            margin: 30px 0;
-            text-align: left;
+        .final-cta {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(238, 90, 111, 0.3));
+            border: 3px solid rgba(255, 217, 61, 0.5);
+            border-radius: 30px;
+            padding: 40px 30px;
+            margin: 40px 0 20px 0;
+            box-shadow: 0 10px 40px rgba(255, 217, 61, 0.3);
+            animation: pulse 3s ease-in-out infinite;
         }
 
-        .profile-title {
-            font-size: 1.5em;
-            font-weight: bold;
+        .final-emoji {
+            font-size: 4.5em;
             margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
         }
 
-        .profile-item {
-            margin: 15px 0;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-        }
-
-        .profile-label {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 5px;
-        }
-
-        .profile-value {
-            font-size: 1.1em;
+        .final-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            margin: 25px 0;
             font-weight: 600;
         }
 
-        .final-ask {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 25px;
-            padding: 30px;
-            margin: 30px 0;
+        .highlight {
+            color: #ffd93d;
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
         }
 
         /* Buttons */
@@ -280,26 +313,92 @@
             color: white;
             border: none;
             border-radius: 50px;
-            padding: 20px 50px;
-            font-size: 1.25em;
-            font-weight: bold;
+            padding: 22px 50px;
+            font-size: 1.3em;
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 35px rgba(238, 90, 111, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 15px 40px rgba(238, 90, 111, 0.5);
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 5px 20px rgba(238, 90, 111, 0.4);
+            transform: scale(0.96);
+            box-shadow: 0 8px 25px rgba(238, 90, 111, 0.4);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            box-shadow: 0 15px 45px rgba(255, 217, 61, 0.6);
+            animation: pulse 2s ease-in-out infinite;
         }
 
         .btn-secondary {
             background: rgba(255, 255, 255, 0.2);
             font-size: 1em;
-            padding: 15px 40px;
+            padding: 18px 40px;
             box-shadow: none;
+            letter-spacing: 1px;
+        }
+
+        /* Particles */
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: particleFly 1s ease-out;
+        }
+
+        @keyframes particleFly {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--x), var(--y)) scale(0);
+            }
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #ffd93d;
+            position: absolute;
+            animation: confettiFall 3s linear;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
         }
 
         .saved-notice {
@@ -307,13 +406,14 @@
             top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-150px);
-            background: #4CAF50;
-            padding: 18px 35px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 20px 40px;
             border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            transition: transform 0.5s ease;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 2000;
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 1.2em;
         }
 
         .saved-notice.show {
@@ -329,11 +429,11 @@
                 <div class="pickup-emoji">✨</div>
                 <div class="pickup-line" id="pickupLineText"></div>
                 <div class="pickup-subtext">
-                    But real talk... looks aren't everything.
+                    But real talk... <strong>looks aren't everything</strong>.
                     <br><br>
-                    Let's see if we actually have chemistry beyond the surface.
-                    <br>
-                    Quick quiz - takes 2 minutes 😊
+                    Let's see if we actually vibe beyond the surface 😏
+                    <br><br>
+                    <strong>Quick quiz - 2 minutes</strong>
                 </div>
                 <button class="btn" id="startBtn">Let's Find Out 👀</button>
             </div>
@@ -341,14 +441,14 @@
             <!-- Screen 2: Name Input -->
             <div class="screen" id="screen2">
                 <div class="emoji-big">💫</div>
-                <h1 class="screen-title">Let's Start Simple</h1>
+                <h1 class="screen-title">First Things First</h1>
                 <p class="screen-subtitle">
-                    I want to know the real you, not just surface stuff.
+                    I want to know the <strong>real you</strong>, not just surface stuff.
                     <br><br>
-                    This isn't about games - it's about seeing if we actually connect.
+                    This game is about seeing if we actually <span class="highlight">connect</span>.
                 </p>
                 <input type="text" id="nameInput" placeholder="What's your name?" maxlength="20">
-                <button class="btn" id="nameBtn">Let's See ✨</button>
+                <button class="btn" id="nameBtn">Let's Go ✨</button>
             </div>
 
             <!-- Screen 3: Quiz -->
@@ -363,32 +463,10 @@
                 <div class="options" id="optionsContainer"></div>
             </div>
 
-            <!-- Screen 4: Guy's Turn -->
+            <!-- Screen 4: Results -->
             <div class="screen" id="screen4">
-                <div class="emoji-big">🌟</div>
-                <h2 class="screen-title">Fair is Fair</h2>
-                <p class="screen-subtitle">
-                    You shared yourself with me. Let me share a bit about who I am too.
-                </p>
-
-                <div class="guy-qualities">
-                    <div class="quality-label">What makes you different? ✨</div>
-                    <input type="text" class="quality-input" id="quality1" placeholder="e.g., I actually listen and remember little details">
-
-                    <div class="quality-label">What are you passionate about? 🔥</div>
-                    <input type="text" class="quality-input" id="quality2" placeholder="e.g., Building my own business / Making music">
-
-                    <div class="quality-label">What can you offer in a relationship? 💫</div>
-                    <input type="text" class="quality-input" id="quality3" placeholder="e.g., Loyalty, adventure, someone who actually texts back">
-                </div>
-
-                <button class="btn" id="showResultsBtn">See If We Connect 💭</button>
-            </div>
-
-            <!-- Screen 5: Results -->
-            <div class="screen" id="screen5">
-                <div class="emoji-big">💫</div>
-                <div style="font-size: 1.2em; opacity: 0.9; margin-bottom: 10px;">Connection Potential</div>
+                <div class="emoji-big">🔥</div>
+                <div style="font-size: 1.3em; opacity: 0.95; margin-bottom: 15px; font-weight: 700;">Connection Score</div>
                 <div class="connection-score" id="connectionScore">0%</div>
 
                 <div class="verdict">
@@ -396,102 +474,99 @@
                     <div class="verdict-text" id="verdictText"></div>
                 </div>
 
-                <div class="guy-profile">
-                    <div class="profile-title">A Bit About Me</div>
-                    <div id="profileContent"></div>
-                </div>
-
-                <div class="final-ask">
-                    <div class="emoji-big">💭</div>
-                    <p style="font-size: 1.15em; line-height: 1.7; margin: 20px 0;">
-                        Look, I don't usually do this... but this actually felt different.
+                <div class="final-cta">
+                    <div class="final-emoji">💬</div>
+                    <div class="final-text">
+                        Look... I don't usually do this, but <span class="highlight">this felt different</span>.
                         <br><br>
-                        If you felt it too, I'd really like to take you out sometime. No expectations, just seeing where this goes.
-                    </p>
-                    <input type="text" id="socialInput" placeholder="Your Instagram or number?">
-                    <button class="btn" id="saveBtn">Yeah, Let's See Where This Goes</button>
+                        If you felt it too, drop your <strong>Instagram or number</strong>.
+                        <br><br>
+                        Let's see where this goes <span class="highlight">🚀</span>
+                    </div>
+                    <input type="text" id="socialInput" placeholder="Your IG or number? 👀" style="margin-top: 30px;">
+                    <button class="btn btn-primary" id="saveBtn">Yeah, Let's Do This 🔥</button>
                 </div>
 
-                <button class="btn-secondary btn" id="restartBtn">Start Over</button>
+                <button class="btn-secondary btn" id="restartBtn">Try Again</button>
             </div>
         </div>
     </div>
 
-    <div class="saved-notice" id="savedNotice">✨ Got it. I'll reach out soon</div>
+    <div class="saved-notice" id="savedNotice">✨ Got it! I'll hit you up soon</div>
 
     <script>
         console.log('🚀 Connection Game Loading...');
 
         // Pickup Lines
         const pickupLines = [
-            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears",
-            "Do you believe in love at first sight?\n\nOr should I walk by again?",
-            "Is your name Google?\n\nBecause you have everything I've been searching for",
-            "Are you a parking ticket?\n\nBecause you've got FINE written all over you",
-            "If you were a vegetable...\n\nYou'd be a cute-cumber",
-            "Excuse me, I think you dropped something\n\nMY JAW"
+            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears ✨",
+            "Do you believe in love at first sight?\n\nOr should I walk by again? 👀",
+            "Is your name Google?\n\nBecause you have everything I've been searching for 🔍",
+            "Are you a parking ticket?\n\nBecause you've got FINE written all over you 😏",
+            "Damn, if you were a vegetable...\n\nYou'd be a cute-cumber 🥒",
+            "Excuse me, I think you dropped something...\n\nMY JAW 😮"
         ];
 
         // Questions
         const questions = [
             {
                 emoji: "🌅",
-                text: "What does a perfect day look like for you?",
+                text: "What's your vibe on a perfect day?",
                 options: [
-                    { text: "Adventure - new experiences, exploring", connection: 4 },
-                    { text: "Balance - productive but also chill", connection: 5 },
-                    { text: "Social - quality time with people I love", connection: 4 },
-                    { text: "Peace - doing what makes me happy", connection: 3 }
+                    { text: "🏔️ Adventure - exploring new spots", connection: 5 },
+                    { text: "⚖️ Balance - productive + chill vibes", connection: 5 },
+                    { text: "👯 Social - quality time with my people", connection: 4 },
+                    { text: "🧘 Solo peace - doing what I love", connection: 3 }
                 ]
             },
             {
                 emoji: "💭",
                 text: "When you're stressed, you need someone who:",
                 options: [
-                    { text: "Gives you space but checks in", connection: 5 },
-                    { text: "Distracts you with fun stuff", connection: 3 },
-                    { text: "Lets you vent and really listens", connection: 5 },
-                    { text: "Solves problems with you", connection: 4 }
+                    { text: "💪 Gives space but checks in on you", connection: 5 },
+                    { text: "🎉 Distracts you with fun stuff", connection: 3 },
+                    { text: "👂 Actually listens when you vent", connection: 5 },
+                    { text: "🧠 Helps you solve the problem", connection: 4 }
                 ]
             },
             {
                 emoji: "❤️",
                 text: "How do you show someone you care?",
                 options: [
-                    { text: "Quality time - being present", connection: 5 },
-                    { text: "Words - saying how I feel", connection: 4 },
-                    { text: "Actions - doing things for them", connection: 4 },
-                    { text: "Physical affection - touch", connection: 3 }
+                    { text: "⏰ Quality time - being fully present", connection: 5 },
+                    { text: "💬 Words - telling them how I feel", connection: 4 },
+                    { text: "✨ Actions - doing things for them", connection: 4 },
+                    { text: "🤗 Physical touch - hugs and affection", connection: 3 }
                 ]
             },
             {
                 emoji: "🎯",
                 text: "What matters most to you in life?",
                 options: [
-                    { text: "Growth - becoming my best self", connection: 5 },
-                    { text: "Connection - deep relationships", connection: 5 },
-                    { text: "Freedom - living on my terms", connection: 4 },
-                    { text: "Impact - making a difference", connection: 4 }
+                    { text: "📈 Growth - leveling up constantly", connection: 5 },
+                    { text: "💕 Connection - real relationships", connection: 5 },
+                    { text: "🦅 Freedom - living on my own terms", connection: 4 },
+                    { text: "🌍 Impact - making a difference", connection: 4 }
                 ]
             },
             {
                 emoji: "🌟",
                 text: "In a relationship, you value:",
                 options: [
-                    { text: "Trust and honesty above all", connection: 5 },
-                    { text: "Being able to be yourself", connection: 5 },
-                    { text: "Feeling supported and believed in", connection: 4 },
-                    { text: "Laughter and not taking life too seriously", connection: 4 }
+                    { text: "💯 Trust and honesty above all", connection: 5 },
+                    { text: "😌 Being yourself, zero judgment", connection: 5 },
+                    { text: "🚀 Feeling supported in your goals", connection: 4 },
+                    { text: "😂 Laughing and not taking life too serious", connection: 4 }
                 ]
             },
             {
-                emoji: "💫",
-                text: "The thing that would make you lose interest:",
+                emoji: "🚩",
+                text: "Biggest turn-off in someone:",
                 options: [
-                    { text: "Dishonesty or playing games", connection: 5 },
-                    { text: "Not making effort or caring", connection: 5 },
-                    { text: "Being close-minded or judgmental", connection: 4 },
-                    { text: "Not being genuine or real", connection: 5 }
+                    { text: "🤥 Dishonesty or playing games", connection: 5 },
+                    { text: "😴 Not making effort or being lazy", connection: 5 },
+                    { text: "🙄 Being judgmental or close-minded", connection: 4 },
+                    { text: "🎭 Fake energy or not being real", connection: 5 }
                 ]
             }
         ];
@@ -500,7 +575,37 @@
         let currentQuestion = 0;
         let answers = [];
         let herName = '';
-        let guyQualities = {};
+
+        // Create particles effect
+        function createParticles(x, y) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
+                particle.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
+                document.querySelector('.card').appendChild(particle);
+                setTimeout(() => particle.remove(), 1000);
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ffd93d', '#ff6b9d', '#667eea', '#f093fb', '#fff'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    document.querySelector('.card').appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+        }
 
         // Navigation Function
         function showScreen(screenNum) {
@@ -513,6 +618,11 @@
 
             // Show target screen
             document.getElementById('screen' + screenNum).classList.add('active');
+
+            // Confetti on results screen
+            if (screenNum === 4) {
+                setTimeout(createConfetti, 500);
+            }
         }
 
         // Quiz Functions
@@ -521,7 +631,7 @@
 
             document.getElementById('questionEmoji').textContent = question.emoji;
             document.getElementById('questionText').textContent = question.text;
-            document.getElementById('progressText').textContent = `${currentQuestion + 1} of ${questions.length}`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
 
             const progress = ((currentQuestion) / questions.length) * 100;
             document.getElementById('progressBar').style.width = progress + '%';
@@ -533,8 +643,9 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = option.text;
-                btn.addEventListener('click', function() {
-                    selectAnswer(option);
+                btn.addEventListener('click', function(e) {
+                    createParticles(e.clientX, e.clientY);
+                    setTimeout(() => selectAnswer(option), 200);
                 });
                 optionsContainer.appendChild(btn);
             });
@@ -548,18 +659,11 @@
             if (currentQuestion < questions.length) {
                 showQuestion();
             } else {
-                showScreen(4);
+                setTimeout(() => showResults(), 300);
             }
         }
 
-        function calculateAndShowResults() {
-            // Get guy qualities
-            guyQualities = {
-                quality1: document.getElementById('quality1').value.trim() || "Someone who actually cares",
-                quality2: document.getElementById('quality2').value.trim() || "Chasing my goals",
-                quality3: document.getElementById('quality3').value.trim() || "Real connection, not games"
-            };
-
+        function showResults() {
             // Calculate score
             const totalConnection = answers.reduce((sum, answer) => sum + answer.connection, 0);
             const maxConnection = questions.length * 5;
@@ -584,50 +688,34 @@
             let title, text;
 
             if (connectionScore >= 85) {
-                title = `${herName}, This Feels Real`;
-                text = `${connectionScore}% connection is rare. Like, really rare. The way you answered these questions... I felt that. We're on the same wavelength and that doesn't happen often.`;
+                title = `${herName}, This Is Rare 🔥`;
+                text = `${connectionScore}% connection doesn't happen often. Like seriously rare. The way you answered these... we're on the same wavelength. That's not something you find every day.`;
             } else if (connectionScore >= 70) {
-                title = 'There\'s Definitely Something Here';
-                text = `${connectionScore}% means we vibe on a deeper level than most people do. Not gonna lie, I'm actually excited to see where this could go.`;
+                title = `Okay ${herName}, I Felt That ✨`;
+                text = `${connectionScore}% means we vibe on a deeper level. Not gonna lie, I'm actually excited to see where this could go. The chemistry is there.`;
             } else if (connectionScore >= 55) {
-                title = 'Interesting Connection';
-                text = `${connectionScore}% shows potential. We might be different in some ways, but sometimes that's exactly what makes it work. Worth exploring for sure.`;
+                title = `There's Something Here 👀`;
+                text = `${connectionScore}% shows real potential. We might be different in some ways, but sometimes that's exactly what makes it work. Worth exploring for sure.`;
             } else {
-                title = 'Different Vibes, But...';
-                text = `${connectionScore}% suggests we see things differently, but honestly? Some of the best connections come from unexpected places. I'd still like to get to know you.`;
+                title = `Different Vibes, But... 🤔`;
+                text = `${connectionScore}% means we see things differently. But honestly? Some of the best connections come from unexpected places. I'd still like to get to know you.`;
             }
 
             document.getElementById('verdictTitle').textContent = title;
             document.getElementById('verdictText').textContent = text;
 
-            // Show guy's profile
-            document.getElementById('profileContent').innerHTML = `
-                <div class="profile-item">
-                    <div class="profile-label">What makes me different:</div>
-                    <div class="profile-value">${guyQualities.quality1}</div>
-                </div>
-                <div class="profile-item">
-                    <div class="profile-label">What I'm passionate about:</div>
-                    <div class="profile-value">${guyQualities.quality2}</div>
-                </div>
-                <div class="profile-item">
-                    <div class="profile-label">What I bring:</div>
-                    <div class="profile-value">${guyQualities.quality3}</div>
-                </div>
-            `;
-
-            showScreen(5);
+            showScreen(4);
         }
 
         function saveConnection() {
             const social = document.getElementById('socialInput').value.trim();
 
             if (social.length < 3) {
-                alert('Hey, I need a way to reach you 😊');
+                alert('Come on, I need a way to reach you! 😊');
                 return;
             }
 
-            const connections = JSON.parse(localStorage.getItem('connectionCheckData') || '[]');
+            const connections = JSON.parse(localStorage.getItem('connectionGameData') || '[]');
             const connectionScore = document.getElementById('connectionScore').textContent;
 
             connections.push({
@@ -635,39 +723,38 @@
                 contact: social,
                 score: connectionScore,
                 answers: answers.map(a => a.text),
-                guyQualities: guyQualities,
                 timestamp: new Date().toISOString()
             });
 
-            localStorage.setItem('connectionCheckData', JSON.stringify(connections));
+            localStorage.setItem('connectionGameData', JSON.stringify(connections));
 
             const notice = document.getElementById('savedNotice');
             notice.classList.add('show');
             setTimeout(() => notice.classList.remove('show'), 3000);
 
             document.getElementById('socialInput').value = '';
-            document.getElementById('socialInput').placeholder = `Got it, ${herName}. Talk soon ✨`;
+            document.getElementById('socialInput').placeholder = `Got it ${herName}! Talk soon ✨`;
+
+            createConfetti();
         }
 
         function restart() {
             currentQuestion = 0;
             answers = [];
             herName = '';
-            guyQualities = {};
 
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
             document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
 
             document.getElementById('nameInput').value = '';
-            document.getElementById('socialInput').placeholder = 'Your Instagram or number?';
-            ['quality1', 'quality2', 'quality3'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('socialInput').placeholder = 'Your IG or number? 👀';
 
             showScreen(1);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM Loaded - Attaching event listeners');
+            console.log('✅ DOM Loaded - Game Ready!');
 
             // Set random pickup line
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
@@ -684,17 +771,12 @@
                 herName = document.getElementById('nameInput').value.trim();
 
                 if (herName.length < 2) {
-                    alert('Hey, I really want to know your name 😊');
+                    alert('Hey, I really want to know your name! 😊');
                     return;
                 }
 
                 showScreen(3);
                 showQuestion();
-            });
-
-            document.getElementById('showResultsBtn').addEventListener('click', function() {
-                console.log('Show results button clicked');
-                calculateAndShowResults();
             });
 
             document.getElementById('saveBtn').addEventListener('click', function() {
@@ -710,7 +792,7 @@
             console.log('✅ All event listeners attached!');
         });
 
-        console.log('💾 View saved connections: JSON.parse(localStorage.getItem("connectionCheckData"))');
+        console.log('💾 View saved data: JSON.parse(localStorage.getItem("connectionGameData"))');
     </script>
 </body>
 </html>
