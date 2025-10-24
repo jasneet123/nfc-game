@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connection Game ✨</title>
+    <title>Connection ✨</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
@@ -13,8 +15,8 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0a0a0f;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -22,24 +24,60 @@
             padding: 20px;
             color: white;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(255, 107, 107, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 183, 77, 0.15) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(5%, 5%) rotate(120deg); }
+            66% { transform: translate(-5%, 5%) rotate(240deg); }
         }
 
         .container {
-            max-width: 500px;
+            max-width: 440px;
             width: 100%;
             position: relative;
+            z-index: 1;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            border-radius: 30px;
-            padding: 40px 30px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(20, 20, 30, 0.85);
+            backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 32px;
+            padding: 48px 36px;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 32px 64px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
             text-align: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
         }
 
         .screen {
@@ -48,329 +86,355 @@
 
         .screen.active {
             display: block;
-            animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        @keyframes slideIn {
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
-                transform: translateY(30px) scale(0.95);
+                transform: translateY(24px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0) scale(1);
+                transform: translateY(0);
             }
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+        /* Typography */
+        .emoji-hero {
+            font-size: 5rem;
+            margin-bottom: 24px;
+            line-height: 1;
+            filter: drop-shadow(0 4px 16px rgba(255, 183, 77, 0.3));
+            animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
-        }
-
-        /* Pickup Screen */
-        .pickup-emoji {
-            font-size: 5em;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(255, 217, 61, 0.5));
+            50% { transform: translateY(-8px); }
         }
 
         .pickup-line {
-            font-size: 1.8em;
-            font-weight: 800;
-            line-height: 1.5;
-            margin: 30px 0;
-            background: linear-gradient(135deg, #ffd93d 0%, #ff6b9d 50%, #ffd93d 100%);
-            background-size: 200% auto;
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin: 32px 0;
+            background: linear-gradient(135deg, #FFB74D 0%, #FF6B6B 50%, #C06C84 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: shimmer 3s linear infinite;
+            letter-spacing: -0.02em;
         }
 
-        .pickup-subtext {
-            font-size: 1.15em;
-            opacity: 0.95;
-            margin: 25px 0;
-            line-height: 1.7;
+        .subtitle {
+            font-size: 1.0625rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 24px 0;
             font-weight: 500;
         }
 
-        /* Common Elements */
+        .subtitle strong {
+            color: #FFB74D;
+            font-weight: 700;
+        }
+
         .screen-title {
-            font-size: 2.5em;
+            font-size: 2.25rem;
             font-weight: 800;
-            margin: 20px 0;
-            background: linear-gradient(135deg, #fff, #ffd93d);
+            margin: 24px 0;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, #fff 0%, #FFB74D 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 217, 61, 0.3);
         }
 
-        .screen-subtitle {
-            font-size: 1.15em;
-            opacity: 0.95;
-            margin: 20px 0;
-            line-height: 1.7;
-            font-weight: 500;
-        }
-
-        .emoji-big {
-            font-size: 4em;
-            margin-bottom: 15px;
-            animation: float 3s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
-        }
-
+        /* Input styling */
         input {
             width: 100%;
-            padding: 22px;
-            border-radius: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.25);
+            padding: 18px 20px;
+            border-radius: 16px;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
             color: white;
-            font-size: 1.3em;
-            text-align: center;
+            font-size: 1.0625rem;
             font-weight: 600;
-            margin: 25px 0;
-            transition: all 0.3s ease;
+            text-align: center;
+            margin: 28px 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            font-family: inherit;
         }
 
         input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 500;
         }
 
         input:focus {
             outline: none;
-            border-color: #ffd93d;
-            box-shadow: 0 0 25px rgba(255, 217, 61, 0.5);
-            transform: scale(1.02);
+            border-color: #FFB74D;
+            background: rgba(255, 183, 77, 0.08);
+            box-shadow: 0 0 0 4px rgba(255, 183, 77, 0.12);
+            transform: translateY(-2px);
         }
 
-        /* Progress Bar */
+        /* Progress bar */
+        .progress-container {
+            margin-bottom: 36px;
+        }
+
         .progress-bar {
             width: 100%;
-            height: 14px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 10px;
-            margin-bottom: 25px;
             overflow: hidden;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ffd93d, #ff6b9d, #ffd93d);
-            background-size: 200% auto;
+            background: linear-gradient(90deg, #FFB74D, #FF6B6B);
             border-radius: 10px;
             transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             width: 0%;
-            animation: shimmer 2s linear infinite;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .progress-text {
-            margin-top: 10px;
-            font-size: 1em;
-            opacity: 0.9;
+            margin-top: 12px;
+            font-size: 0.875rem;
             font-weight: 700;
-            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
         }
 
-        /* Questions */
+        /* Question styling */
         .question-emoji {
-            font-size: 5em;
-            margin: 20px 0;
-            animation: pulse 2s ease-in-out infinite;
-            filter: drop-shadow(0 0 20px rgba(255, 217, 61, 0.4));
+            font-size: 4rem;
+            margin: 16px 0;
+            line-height: 1;
         }
 
         .question-text {
-            font-size: 1.7em;
+            font-size: 1.625rem;
             font-weight: 700;
-            margin: 25px 0 40px 0;
-            line-height: 1.5;
+            margin: 24px 0 36px 0;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
         }
 
         .options {
             display: grid;
-            gap: 15px;
+            gap: 12px;
         }
 
         .option-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 3px solid rgba(255, 255, 255, 0.35);
-            border-radius: 20px;
-            padding: 22px;
-            font-size: 1.15em;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 16px;
+            padding: 20px 20px;
+            font-size: 1.0625rem;
             color: white;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             font-weight: 600;
             text-align: left;
             position: relative;
             overflow: hidden;
+            font-family: inherit;
         }
 
         .option-btn::before {
             content: '';
             position: absolute;
             top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 183, 77, 0.15), rgba(255, 107, 107, 0.15));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .option-btn:hover {
+            border-color: rgba(255, 183, 77, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 183, 77, 0.15);
         }
 
         .option-btn:hover::before {
-            left: 100%;
+            opacity: 1;
         }
 
         .option-btn:active {
-            background: rgba(255, 217, 61, 0.3);
-            border-color: #ffd93d;
-            transform: scale(0.97);
-            box-shadow: 0 0 30px rgba(255, 217, 61, 0.5);
+            transform: scale(0.98);
+            border-color: #FFB74D;
+            background: rgba(255, 183, 77, 0.1);
         }
 
-        /* Results */
+        /* Results screen */
         .connection-score {
-            font-size: 7em;
+            font-size: 6rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
+            background: linear-gradient(135deg, #FFB74D, #FF6B6B);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin: 30px 0;
-            filter: drop-shadow(0 0 30px rgba(255, 217, 61, 0.5));
-            animation: pulse 2s ease-in-out infinite;
+            margin: 32px 0;
+            line-height: 1;
+            letter-spacing: -0.03em;
+            filter: drop-shadow(0 4px 24px rgba(255, 183, 77, 0.4));
         }
 
-        .verdict {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 35px;
-            margin: 30px 0;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+        .verdict-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 32px 28px;
+            margin: 32px 0;
         }
 
         .verdict-title {
-            font-size: 2.2em;
+            font-size: 1.75rem;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             line-height: 1.3;
+            letter-spacing: -0.02em;
         }
 
         .verdict-text {
-            font-size: 1.2em;
-            line-height: 1.8;
+            font-size: 1.0625rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
         }
 
-        .final-cta {
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(238, 90, 111, 0.3));
-            border: 3px solid rgba(255, 217, 61, 0.5);
-            border-radius: 30px;
-            padding: 40px 30px;
-            margin: 40px 0 20px 0;
-            box-shadow: 0 10px 40px rgba(255, 217, 61, 0.3);
-            animation: pulse 3s ease-in-out infinite;
-        }
-
-        .final-emoji {
-            font-size: 4.5em;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        .final-text {
-            font-size: 1.3em;
-            line-height: 1.8;
-            margin: 25px 0;
-            font-weight: 600;
-        }
-
-        .highlight {
-            color: #ffd93d;
-            font-weight: 800;
-            text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
-        }
-
-        /* Buttons */
-        .btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 22px 50px;
-            font-size: 1.3em;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            box-shadow: 0 15px 40px rgba(238, 90, 111, 0.5);
-            width: 100%;
-            margin-top: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
+        .cta-card {
+            background: linear-gradient(135deg, rgba(255, 183, 77, 0.12), rgba(255, 107, 107, 0.12));
+            border: 1.5px solid rgba(255, 183, 77, 0.3);
+            border-radius: 24px;
+            padding: 36px 28px;
+            margin: 36px 0 24px 0;
             position: relative;
             overflow: hidden;
         }
 
-        .btn::before {
+        .cta-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: -100%;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 183, 77, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1;
+        }
+
+        .cta-text {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            margin: 24px 0;
+            font-weight: 600;
+        }
+
+        .highlight {
+            color: #FFB74D;
+            font-weight: 800;
+        }
+
+        /* Buttons */
+        .btn {
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-            box-shadow: 0 8px 25px rgba(238, 90, 111, 0.4);
+            padding: 18px 32px;
+            border-radius: 16px;
+            border: none;
+            font-size: 1.0625rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+            letter-spacing: -0.01em;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #ffd93d, #ff6b9d);
-            box-shadow: 0 15px 45px rgba(255, 217, 61, 0.6);
-            animation: pulse 2s ease-in-out infinite;
+            background: linear-gradient(135deg, #FFB74D, #FF6B6B);
+            color: #0a0a0f;
+            box-shadow: 0 8px 24px rgba(255, 183, 77, 0.4);
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(255, 183, 77, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            font-size: 1em;
-            padding: 18px 40px;
-            box-shadow: none;
-            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            font-size: 0.9375rem;
+            padding: 14px 28px;
+            margin-top: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: white;
         }
 
         /* Particles */
         .particle {
             position: absolute;
-            width: 10px;
-            height: 10px;
-            background: white;
+            width: 8px;
+            height: 8px;
+            background: #FFB74D;
             border-radius: 50%;
             pointer-events: none;
             opacity: 0;
             animation: particleFly 1s ease-out;
+            box-shadow: 0 0 8px rgba(255, 183, 77, 0.6);
         }
 
         @keyframes particleFly {
@@ -386,38 +450,94 @@
 
         /* Confetti */
         .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #ffd93d;
             position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FFB74D;
             animation: confettiFall 3s linear;
         }
 
         @keyframes confettiFall {
             to {
-                transform: translateY(100vh) rotate(360deg);
+                transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
         }
 
-        .saved-notice {
+        /* Success notification */
+        .notification {
             position: fixed;
-            top: 20px;
+            top: 24px;
             left: 50%;
-            transform: translateX(-50%) translateY(-150px);
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            padding: 20px 40px;
-            border-radius: 50px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateX(-50%) translateY(-200px);
+            background: rgba(20, 20, 30, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 16px 32px;
+            border-radius: 16px;
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 2000;
-            font-weight: 800;
-            font-size: 1.2em;
+            font-weight: 700;
+            font-size: 1rem;
         }
 
-        .saved-notice.show {
+        .notification.show {
             transform: translateX(-50%) translateY(0);
+        }
+
+        /* Score animation */
+        @keyframes scoreReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .score-reveal {
+            animation: scoreReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Label above score */
+        .score-label {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 12px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card {
+                padding: 36px 24px;
+                border-radius: 28px;
+            }
+
+            .emoji-hero {
+                font-size: 4rem;
+            }
+
+            .pickup-line {
+                font-size: 1.5rem;
+            }
+
+            .screen-title {
+                font-size: 1.875rem;
+            }
+
+            .connection-score {
+                font-size: 4.5rem;
+            }
         }
     </style>
 </head>
@@ -426,37 +546,39 @@
         <div class="card">
             <!-- Screen 1: Pickup Line -->
             <div class="screen active" id="screen1">
-                <div class="pickup-emoji">✨</div>
+                <div class="emoji-hero">✨</div>
                 <div class="pickup-line" id="pickupLineText"></div>
-                <div class="pickup-subtext">
+                <div class="subtitle">
                     But real talk... <strong>looks aren't everything</strong>.
                     <br><br>
-                    Let's see if we actually vibe beyond the surface 😏
+                    Let's see if we actually vibe beyond the surface.
                     <br><br>
-                    <strong>Quick quiz - 2 minutes</strong>
+                    <strong>Quick quiz · 2 minutes</strong>
                 </div>
-                <button class="btn" id="startBtn">Let's Find Out 👀</button>
+                <button class="btn btn-primary" id="startBtn">Let's Find Out</button>
             </div>
 
             <!-- Screen 2: Name Input -->
             <div class="screen" id="screen2">
-                <div class="emoji-big">💫</div>
+                <div class="emoji-hero">💫</div>
                 <h1 class="screen-title">First Things First</h1>
-                <p class="screen-subtitle">
-                    I want to know the <strong>real you</strong>, not just surface stuff.
+                <p class="subtitle">
+                    I want to know the real you, not just surface stuff.
                     <br><br>
-                    This game is about seeing if we actually <span class="highlight">connect</span>.
+                    This is about seeing if we actually <span class="highlight">connect</span>.
                 </p>
-                <input type="text" id="nameInput" placeholder="What's your name?" maxlength="20">
-                <button class="btn" id="nameBtn">Let's Go ✨</button>
+                <input type="text" id="nameInput" placeholder="What's your name?" maxlength="20" autocomplete="off">
+                <button class="btn btn-primary" id="nameBtn">Continue</button>
             </div>
 
             <!-- Screen 3: Quiz -->
             <div class="screen" id="screen3">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar"></div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                    <div class="progress-text" id="progressText"></div>
                 </div>
-                <div class="progress-text" id="progressText"></div>
 
                 <div class="question-emoji" id="questionEmoji"></div>
                 <div class="question-text" id="questionText"></div>
@@ -465,46 +587,48 @@
 
             <!-- Screen 4: Results -->
             <div class="screen" id="screen4">
-                <div class="emoji-big">🔥</div>
-                <div style="font-size: 1.3em; opacity: 0.95; margin-bottom: 15px; font-weight: 700;">Connection Score</div>
+                <div class="emoji-hero">🔥</div>
+                <div class="score-label">Connection Score</div>
                 <div class="connection-score" id="connectionScore">0%</div>
 
-                <div class="verdict">
+                <div class="verdict-card">
                     <div class="verdict-title" id="verdictTitle"></div>
                     <div class="verdict-text" id="verdictText"></div>
                 </div>
 
-                <div class="final-cta">
-                    <div class="final-emoji">💬</div>
-                    <div class="final-text">
-                        Look... I don't usually do this, but <span class="highlight">this felt different</span>.
-                        <br><br>
-                        If you felt it too, drop your <strong>Instagram or number</strong>.
-                        <br><br>
-                        Let's see where this goes <span class="highlight">🚀</span>
+                <div class="cta-card">
+                    <div class="cta-content">
+                        <div class="cta-emoji">💬</div>
+                        <div class="cta-text">
+                            Look... I don't usually do this, but <span class="highlight">this felt different</span>.
+                            <br><br>
+                            If you felt it too, drop your Instagram or number.
+                            <br><br>
+                            Let's see where this goes.
+                        </div>
+                        <input type="text" id="socialInput" placeholder="@yourinstagram" autocomplete="off">
+                        <button class="btn btn-primary" id="saveBtn">Let's Connect</button>
                     </div>
-                    <input type="text" id="socialInput" placeholder="Your IG or number? 👀" style="margin-top: 30px;">
-                    <button class="btn btn-primary" id="saveBtn">Yeah, Let's Do This 🔥</button>
                 </div>
 
-                <button class="btn-secondary btn" id="restartBtn">Try Again</button>
+                <button class="btn btn-secondary" id="restartBtn">Start Over</button>
             </div>
         </div>
     </div>
 
-    <div class="saved-notice" id="savedNotice">✨ Got it! I'll hit you up soon</div>
+    <div class="notification" id="savedNotice">✨ Got it! I'll reach out soon</div>
 
     <script>
-        console.log('🚀 Connection Game Loading...');
+        console.log('🚀 Connection App Loading...');
 
         // Pickup Lines
         const pickupLines = [
-            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears ✨",
-            "Do you believe in love at first sight?\n\nOr should I walk by again? 👀",
-            "Is your name Google?\n\nBecause you have everything I've been searching for 🔍",
-            "Are you a parking ticket?\n\nBecause you've got FINE written all over you 😏",
-            "Damn, if you were a vegetable...\n\nYou'd be a cute-cumber 🥒",
-            "Excuse me, I think you dropped something...\n\nMY JAW 😮"
+            "Are you a magician?\n\nBecause whenever I look at you, everyone else disappears",
+            "Do you believe in love at first sight?\n\nOr should I walk by again?",
+            "Is your name Google?\n\nBecause you have everything I've been searching for",
+            "Are you a parking ticket?\n\nBecause you've got FINE written all over you",
+            "If you were a vegetable...\n\nYou'd be a cute-cumber",
+            "Excuse me, I think you dropped something\n\nMY JAW"
         ];
 
         // Questions
@@ -602,7 +726,7 @@
 
         // Create confetti
         function createConfetti() {
-            const colors = ['#ffd93d', '#ff6b9d', '#667eea', '#f093fb', '#fff'];
+            const colors = ['#FFB74D', '#FF6B6B', '#7877C6', '#fff'];
             for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
@@ -610,10 +734,10 @@
                     confetti.style.left = Math.random() * 100 + '%';
                     confetti.style.top = '-10px';
                     confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDelay = Math.random() * 0.3 + 's';
                     document.querySelector('.card').appendChild(confetti);
                     setTimeout(() => confetti.remove(), 3000);
-                }, i * 50);
+                }, i * 30);
             }
         }
 
@@ -621,17 +745,14 @@
         function showScreen(screenNum) {
             console.log('📱 Navigating to screen', screenNum);
 
-            // Hide all screens
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
 
-            // Show target screen
             document.getElementById('screen' + screenNum).classList.add('active');
 
-            // Confetti on results screen
             if (screenNum === 4) {
-                setTimeout(createConfetti, 500);
+                setTimeout(createConfetti, 300);
             }
         }
 
@@ -655,7 +776,7 @@
                 btn.textContent = option.text;
                 btn.addEventListener('click', function(e) {
                     createParticles(e.clientX, e.clientY);
-                    setTimeout(() => selectAnswer(option), 200);
+                    setTimeout(() => selectAnswer(option), 150);
                 });
                 optionsContainer.appendChild(btn);
             });
@@ -669,12 +790,11 @@
             if (currentQuestion < questions.length) {
                 showQuestion();
             } else {
-                setTimeout(() => showResults(), 300);
+                setTimeout(() => showResults(), 200);
             }
         }
 
         function showResults() {
-            // Calculate score
             const totalConnection = answers.reduce((sum, answer) => sum + answer.connection, 0);
             const maxConnection = questions.length * 5;
             const connectionScore = Math.round((totalConnection / maxConnection) * 100);
@@ -682,6 +802,7 @@
             // Animate score
             let currentScore = 0;
             const scoreElement = document.getElementById('connectionScore');
+            scoreElement.classList.add('score-reveal');
             const duration = 2000;
             const increment = connectionScore / (duration / 16);
 
@@ -698,16 +819,16 @@
             let title, text;
 
             if (connectionScore >= 85) {
-                title = `${herName}, This Is Rare 🔥`;
-                text = `${connectionScore}% connection doesn't happen often. Like seriously rare. The way you answered these... we're on the same wavelength. That's not something you find every day.`;
+                title = `${herName}, This Is Rare`;
+                text = `${connectionScore}% connection doesn't happen often. The way you answered these... we're on the same wavelength. That's not something you find every day.`;
             } else if (connectionScore >= 70) {
-                title = `Okay ${herName}, I Felt That ✨`;
+                title = `Okay ${herName}, I Felt That`;
                 text = `${connectionScore}% means we vibe on a deeper level. Not gonna lie, I'm actually excited to see where this could go. The chemistry is there.`;
             } else if (connectionScore >= 55) {
-                title = `There's Something Here 👀`;
+                title = `There's Something Here`;
                 text = `${connectionScore}% shows real potential. We might be different in some ways, but sometimes that's exactly what makes it work. Worth exploring for sure.`;
             } else {
-                title = `Different Vibes, But... 🤔`;
+                title = `Different Vibes, But...`;
                 text = `${connectionScore}% means we see things differently. But honestly? Some of the best connections come from unexpected places. I'd still like to get to know you.`;
             }
 
@@ -757,20 +878,18 @@
             document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
 
             document.getElementById('nameInput').value = '';
-            document.getElementById('socialInput').placeholder = 'Your IG or number? 👀';
+            document.getElementById('socialInput').placeholder = '@yourinstagram';
 
             showScreen(1);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ DOM Loaded - Game Ready!');
+            console.log('✅ DOM Loaded - App Ready!');
 
-            // Set random pickup line
             const randomLine = pickupLines[Math.floor(Math.random() * pickupLines.length)];
             document.getElementById('pickupLineText').innerHTML = randomLine.replace(/\n/g, '<br>');
 
-            // Button event listeners
             document.getElementById('startBtn').addEventListener('click', function() {
                 console.log('Start button clicked');
                 showScreen(2);
